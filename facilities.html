@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Facilities &amp; Club Map · 25-acre campus · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.map-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; align-items: start; }
+@media (max-width: 1000px) { .map-grid { grid-template-columns: 1fr; } }
+
+.map-stage {
+  position: relative; aspect-ratio: 1.3;
+  background: radial-gradient(ellipse at 50% 60%, #1a1a1a 0%, #050505 75%);
+  border-radius: var(--radius-xl); border: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  perspective: 1800px;
+}
+.map-tilt {
+  position: absolute; inset: 0;
+  transform: rotateX(48deg) rotateZ(-8deg);
+  transform-origin: center 60%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+.map-stage:hover .map-tilt { transform: rotateX(45deg) rotateZ(-6deg) scale(1.03); }
+.map-stage svg { display: block; width: 100%; height: 100%; }
+
+.welcome-bg {
+  position: absolute; top: 18%; left: 0; right: 0;
+  text-align: center; pointer-events: none;
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  color: rgba(255,255,255,0.04); letter-spacing: 0.02em;
+  line-height: 1; z-index: 0;
+}
+
+.zone {
+  cursor: pointer;
+  transition: all 0.25s ease;
+  filter: drop-shadow(0 6px 8px rgba(0,0,0,0.5));
+}
+.zone:hover, .zone.active {
+  filter: drop-shadow(0 12px 16px rgba(0,0,0,0.6)) drop-shadow(0 0 12px var(--lsc-green-glow)) brightness(1.15);
+  transform: translateY(-2px);
+  transform-origin: center center;
+}
+.zone-clay   { fill: #C77848; stroke: #FFFFFF; stroke-width: 0.6; stroke-dasharray: 0; }
+.zone-hard   { fill: #4A8FB8; stroke: #FFFFFF; stroke-width: 0.6; }
+.zone-grass  { fill: #4A8E3A; stroke: #FFFFFF; stroke-width: 0.6; }
+.zone-pool   { fill: #4FC3F7; stroke: #FFFFFF; stroke-width: 0.5; }
+.zone-padel  { fill: #2E5F7C; stroke: #FFFFFF; stroke-width: 0.6; }
+.zone-bldg   { fill: #C9C9C9; stroke: #6E6E6E; stroke-width: 0.4; }
+.zone-bldg-r { fill: #8B5A3C; stroke: #5C3A26; stroke-width: 0.4; }
+.zone-hall   { fill: #E8E8E8; stroke: #B0B0B0; stroke-width: 0.4; }
+.zone-track  { fill: #8B4513; stroke: #FFFFFF; stroke-width: 0.4; }
+.zone-garden { fill: #2D5A2D; stroke: none; }
+.zone-path   { fill: #6B6B6B; stroke: none; }
+.zone-ground { fill: #2A2A2A; stroke: rgba(68,214,44,0.15); stroke-width: 0.8; }
+.zone-water  { fill: #3D8FB8; stroke: rgba(255,255,255,0.3); stroke-width: 0.3; }
+
+.tree { fill: #2D5A2D; }
+.tree-dot { fill: #4A8E3A; }
+.line-marker { stroke: white; stroke-width: 0.4; fill: none; }
+
+.zone-label {
+  font-family: var(--font-display);
+  font-size: 6px; font-weight: 800;
+  fill: rgba(255,255,255,0.85); pointer-events: none;
+  letter-spacing: 0.1em;
+}
+.compass {
+  position: absolute; top: 1rem; right: 1rem;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 800; color: var(--lsc-green);
+  font-size: 1.2rem;
+}
+.compass::after {
+  content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+  font-size: 0.6rem; color: var(--lsc-gray);
+}
+.scale {
+  position: absolute; bottom: 1rem; left: 1rem;
+  display: flex; gap: 0.5rem; align-items: center;
+  background: rgba(0,0,0,0.6); padding: 0.4rem 0.8rem; border-radius: 999px;
+  font-size: 0.7rem; color: var(--lsc-gray-light); letter-spacing: 0.1em;
+}
+.scale-bar { width: 50px; height: 2px; background: var(--lsc-green); }
+
+.zone-detail {
+  background: var(--lsc-dark-2);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg);
+  padding: 1.75rem;
+  position: sticky; top: 6rem;
+}
+.zone-detail .badge { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 999px; background: rgba(68,214,44,0.15); color: var(--lsc-green); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.zone-detail h2 { font-family: var(--font-display); font-size: 2rem; margin: 0.7rem 0; }
+.zone-detail .meta-list { list-style: none; padding: 0; margin: 1rem 0; }
+.zone-detail .meta-list li { padding: 0.5rem 0; display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; color: var(--lsc-gray-light); }
+.zone-detail .meta-list li:last-child { border: none; }
+.zone-detail .meta-list .v { color: var(--lsc-white); font-weight: 700; }
+
+.facility-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 3rem; }
+@media (max-width: 800px) { .facility-grid { grid-template-columns: 1fr; } }
+.fac-card { padding: 0; overflow: hidden; }
+.fac-card .img { aspect-ratio: 1.6; background-size: cover; background-position: center; position: relative; }
+.fac-card .img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.7) 100%); }
+.fac-card .body { padding: 1.25rem; }
+.fac-card .fc-num { font-family: var(--font-display); font-size: 0.7rem; color: var(--lsc-green); letter-spacing: 0.2em; }
+.fac-card h3 { font-family: var(--font-display); font-size: 1.4rem; margin: 0.4rem 0 0.4rem; }
+.fac-card p { color: var(--lsc-gray-light); font-size: 0.9rem; margin: 0; }
+
+.zone-photo {
+  height: 180px; border-radius: var(--radius-md); margin-bottom: 1.25rem;
+  background-size: cover; background-position: center;
+  position: relative; display: none;
+}
+.zone-photo::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius-md); background: linear-gradient(180deg, transparent 50%, rgba(26,26,26,0.4) 100%); }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-logo" href="index.html"><img src="assets/logo.png" alt="LSC" /></a>
+  <div class="navbar-links">
+        <a href="programs.html" data-i18n="programs">Programs</a>
+    <a href="events.html" data-i18n="events">Events</a>
+    <a href="facilities.html" class="active" data-i18n="facilities">Facilities</a>
+    <a href="membership.html" data-i18n="membership">Membership</a>
+    <a href="app.html" data-i18n="mobileApp">Mobile App</a>
+    <a href="news.html" data-i18n="news">News</a>
+  </div>
+  <div class="navbar-actions">
+    <button class="chip lang-toggle" onclick="toggleLang()">عربي</button>
+    <a class="btn btn-ghost" href="login.html" data-i18n="loginShort">Login</a>
+  </div>
+</nav>
+
+<section class="section" style="padding-top:8rem;">
+  <div class="container">
+    <span class="eyebrow" data-i18n="facilitiesEyebrow">25-acre campus · New Cairo</span>
+    <h1 class="display" style="font-size:clamp(2.5rem,5vw,4.5rem);margin:0.5rem 0 1rem;" data-i18n="facilitiesTitle">Hover the map. <span class="brand-grad">Tour the club.</span></h1>
+    <p style="color:var(--lsc-gray-light);max-width:640px;font-size:1.1rem;line-height:1.6;margin-bottom:3rem;">Tap any zone to see specs and live availability. Live data feeds from the venue management system.</p>
+
+    <div class="map-grid">
+      <div class="map-stage">
+        <div class="welcome-bg">WELCOME TO<br/>LIFE SPORTS CLUB</div>
+
+        <div class="map-tilt">
+        <svg viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+
+          <!-- Curved kidney-shaped land plot -->
+          <path class="zone-ground" d="
+            M 120 30
+            Q 80 30, 70 70
+            L 50 180
+            Q 45 220, 65 250
+            L 80 320
+            Q 70 360, 90 400
+            L 120 470
+            Q 140 495, 180 495
+            L 280 490
+            Q 320 485, 335 450
+            L 350 380
+            Q 360 340, 345 305
+            L 325 230
+            Q 320 195, 335 165
+            L 340 110
+            Q 335 65, 295 50
+            L 220 35
+            Q 170 25, 120 30 Z" />
+
+          <!-- Garden patches and pathways -->
+          <path class="zone-garden" d="M 165 230 Q 175 220, 195 225 L 220 245 Q 215 260, 200 265 L 175 260 Q 162 250, 165 230 Z"/>
+          <path class="zone-water" d="M 175 235 Q 185 230, 200 235 L 210 250 Q 200 258, 185 255 Q 173 248, 175 235 Z"/>
+
+          <!-- ============ FOOTBALL FIELD with running track (top) ============ -->
+          <g class="zone" data-id="football">
+            <ellipse cx="200" cy="100" rx="105" ry="55" class="zone-track"/>
+            <rect x="120" y="70" width="160" height="60" rx="3" class="zone-grass"/>
+            <line x1="200" y1="70" x2="200" y2="130" class="line-marker"/>
+            <circle cx="200" cy="100" r="9" fill="none" stroke="white" stroke-width="0.4"/>
+            <rect x="120" y="86" width="6" height="28" fill="none" stroke="white" stroke-width="0.4"/>
+            <rect x="274" y="86" width="6" height="28" fill="none" stroke="white" stroke-width="0.4"/>
+          </g>
+          <text class="zone-label" x="200" y="103" text-anchor="middle">FOOTBALL</text>
+
+          <!-- ============ POOLS (middle-left) ============ -->
+          <g class="zone" data-id="pool">
+            <!-- Main Olympic 50m -->
+            <rect x="78" y="170" width="78" height="42" rx="3" class="zone-pool"/>
+            <line x1="78" y1="180" x2="156" y2="180" class="line-marker"/>
+            <line x1="78" y1="190" x2="156" y2="190" class="line-marker"/>
+            <line x1="78" y1="200" x2="156" y2="200" class="line-marker"/>
+            <!-- Kids pool -->
+            <rect x="78" y="220" width="44" height="22" rx="3" class="zone-pool"/>
+            <!-- Diving / circular pool -->
+            <circle cx="142" cy="234" r="14" class="zone-pool"/>
+          </g>
+          <text class="zone-label" x="117" y="194" text-anchor="middle">OLYMPIC POOL</text>
+
+          <!-- ============ POOL DECK BUILDINGS ============ -->
+          <rect class="zone-bldg-r" x="76" y="252" width="50" height="22" rx="2"/>
+          <rect class="zone-bldg" x="135" y="255" width="38" height="20" rx="2"/>
+
+          <!-- ============ TENNIS COURTS (long diagonal strip, right side) ============ -->
+          <g class="zone" data-id="tennis">
+            <!-- Hard courts (blue) -->
+            <rect x="252" y="200" width="36" height="22" rx="1" class="zone-hard"/>
+            <rect x="252" y="226" width="36" height="22" rx="1" class="zone-hard"/>
+            <line x1="252" y1="211" x2="288" y2="211" class="line-marker"/>
+            <line x1="252" y1="237" x2="288" y2="237" class="line-marker"/>
+            <line x1="270" y1="200" x2="270" y2="222" class="line-marker"/>
+            <line x1="270" y1="226" x2="270" y2="248" class="line-marker"/>
+            <!-- Clay courts -->
+            <rect x="252" y="252" width="36" height="22" rx="1" class="zone-clay"/>
+            <rect x="252" y="278" width="36" height="22" rx="1" class="zone-clay"/>
+            <rect x="252" y="304" width="36" height="22" rx="1" class="zone-clay"/>
+            <rect x="252" y="330" width="36" height="22" rx="1" class="zone-clay"/>
+            <line x1="252" y1="263" x2="288" y2="263" class="line-marker"/>
+            <line x1="252" y1="289" x2="288" y2="289" class="line-marker"/>
+            <line x1="252" y1="315" x2="288" y2="315" class="line-marker"/>
+            <line x1="252" y1="341" x2="288" y2="341" class="line-marker"/>
+            <line x1="270" y1="252" x2="270" y2="352" class="line-marker"/>
+          </g>
+          <text class="zone-label" x="270" y="195" text-anchor="middle">TENNIS</text>
+
+          <!-- ============ PADEL COURTS ============ -->
+          <g class="zone" data-id="padel">
+            <rect x="200" y="200" width="32" height="48" rx="1" class="zone-padel"/>
+            <rect x="200" y="252" width="32" height="48" rx="1" class="zone-padel"/>
+            <rect x="200" y="304" width="32" height="48" rx="1" class="zone-padel"/>
+            <line x1="200" y1="224" x2="232" y2="224" class="line-marker"/>
+            <line x1="200" y1="276" x2="232" y2="276" class="line-marker"/>
+            <line x1="200" y1="328" x2="232" y2="328" class="line-marker"/>
+          </g>
+          <text class="zone-label" x="216" y="376" text-anchor="middle">PADEL</text>
+
+          <!-- ============ GYM building (right of football, large) ============ -->
+          <g class="zone" data-id="gym">
+            <rect x="294" y="180" width="50" height="60" rx="2" class="zone-bldg"/>
+            <rect x="298" y="184" width="42" height="6" fill="#5C3A26"/>
+            <rect x="298" y="194" width="14" height="14" fill="rgba(0,0,0,0.2)"/>
+            <rect x="316" y="194" width="14" height="14" fill="rgba(0,0,0,0.2)"/>
+            <rect x="298" y="214" width="14" height="14" fill="rgba(0,0,0,0.2)"/>
+            <rect x="316" y="214" width="14" height="14" fill="rgba(0,0,0,0.2)"/>
+          </g>
+          <text class="zone-label" x="319" y="213" text-anchor="middle">GYM</text>
+
+          <!-- ============ CAFE / RECEPTION (central building) ============ -->
+          <g class="zone" data-id="cafe">
+            <rect x="160" y="265" width="40" height="42" rx="2" class="zone-bldg-r"/>
+            <rect x="164" y="270" width="32" height="4" fill="#5C3A26"/>
+            <rect x="164" y="278" width="32" height="3" fill="rgba(0,0,0,0.15)"/>
+            <rect x="164" y="284" width="32" height="3" fill="rgba(0,0,0,0.15)"/>
+            <rect x="164" y="290" width="32" height="3" fill="rgba(0,0,0,0.15)"/>
+            <rect x="164" y="296" width="32" height="3" fill="rgba(0,0,0,0.15)"/>
+          </g>
+          <text class="zone-label" x="180" y="291" text-anchor="middle">CAFE</text>
+
+          <!-- ============ STUDIOS / SQUASH (smaller building cluster) ============ -->
+          <g class="zone" data-id="studios">
+            <rect x="160" y="315" width="38" height="32" rx="2" class="zone-bldg"/>
+            <rect x="164" y="319" width="30" height="3" fill="#666"/>
+            <rect x="164" y="326" width="6" height="6" fill="rgba(0,0,0,0.15)"/>
+            <rect x="174" y="326" width="6" height="6" fill="rgba(0,0,0,0.15)"/>
+            <rect x="184" y="326" width="6" height="6" fill="rgba(0,0,0,0.15)"/>
+          </g>
+          <text class="zone-label" x="179" y="335" text-anchor="middle">STUDIOS</text>
+
+          <!-- ============ INDOOR SPORTS HALL (curved white roof, bottom) ============ -->
+          <g class="zone" data-id="stem">
+            <path d="M 232 392 Q 254 374, 280 392 L 280 442 L 232 442 Z" class="zone-hall"/>
+            <ellipse cx="256" cy="392" rx="24" ry="6" fill="#F5F5F5"/>
+            <line x1="240" y1="395" x2="240" y2="442" stroke="#999" stroke-width="0.3"/>
+            <line x1="248" y1="392" x2="248" y2="442" stroke="#999" stroke-width="0.3"/>
+            <line x1="256" y1="390" x2="256" y2="442" stroke="#999" stroke-width="0.3"/>
+            <line x1="264" y1="392" x2="264" y2="442" stroke="#999" stroke-width="0.3"/>
+            <line x1="272" y1="395" x2="272" y2="442" stroke="#999" stroke-width="0.3"/>
+          </g>
+          <text class="zone-label" x="256" y="420" text-anchor="middle">SPORTS HALL</text>
+
+          <!-- ============ BASKETBALL / OUTDOOR COURTS ============ -->
+          <rect class="zone-clay" x="148" y="395" width="34" height="50" rx="1"/>
+          <line x1="148" y1="420" x2="182" y2="420" class="line-marker"/>
+          <circle cx="165" cy="420" r="6" fill="none" stroke="white" stroke-width="0.4"/>
+
+          <!-- Trees scattered around -->
+          <circle class="tree" cx="100" cy="155" r="3.5"/>
+          <circle class="tree-dot" cx="100" cy="153" r="2"/>
+          <circle class="tree" cx="240" cy="155" r="3.5"/>
+          <circle class="tree-dot" cx="240" cy="153" r="2"/>
+          <circle class="tree" cx="320" cy="160" r="3"/>
+          <circle class="tree-dot" cx="320" cy="158" r="1.7"/>
+          <circle class="tree" cx="105" cy="290" r="3"/>
+          <circle class="tree-dot" cx="105" cy="288" r="1.7"/>
+          <circle class="tree" cx="125" cy="320" r="3"/>
+          <circle class="tree-dot" cx="125" cy="318" r="1.7"/>
+          <circle class="tree" cx="320" cy="290" r="3"/>
+          <circle class="tree-dot" cx="320" cy="288" r="1.7"/>
+          <circle class="tree" cx="318" cy="370" r="3"/>
+          <circle class="tree-dot" cx="318" cy="368" r="1.7"/>
+          <circle class="tree" cx="115" cy="450" r="3"/>
+          <circle class="tree-dot" cx="115" cy="448" r="1.7"/>
+
+          <!-- Pathways -->
+          <path class="zone-path" d="M 175 165 L 175 260 L 200 280 L 200 380 L 220 415 L 220 470" stroke="#5A5A5A" stroke-width="3" fill="none" opacity="0.5"/>
+
+          <!-- Main gate marker -->
+          <circle cx="200" cy="478" r="4" fill="var(--lsc-green)"/>
+          <circle cx="200" cy="478" r="8" fill="none" stroke="var(--lsc-green)" stroke-width="0.6" opacity="0.5"/>
+
+        </svg>
+        </div>
+
+        <div class="compass">N</div>
+        <div class="scale"><div class="scale-bar"></div>50 m</div>
+      </div>
+
+      <div class="zone-detail" id="zone-detail">
+        <span class="badge">Aquatic</span>
+        <h2>Olympic Pool</h2>
+        <p style="color:var(--lsc-gray-light);font-size:0.95rem;line-height:1.6;">A newly expanded 50m Olympic-spec lane pool with adjacent kids' learning pool. Heated year-round.</p>
+        <ul class="meta-list">
+          <li><span>Type</span><span class="v">Aquatic</span></li>
+          <li><span>Lanes</span><span class="v">8 · 50m</span></li>
+          <li><span>Capacity</span><span class="v">120 swimmers</span></li>
+          <li><span>Open today</span><span class="v">6:00 AM – 11:00 PM</span></li>
+          <li><span>Live availability</span><span class="v" style="color:var(--lsc-green);">Open · 4 lanes free</span></li>
+        </ul>
+        <a class="btn btn-primary" style="width:100%;" href="program-detail.html?sport=swimming">Book a swim slot</a>
+      </div>
+    </div>
+
+    <!-- Facility cards -->
+    <h2 class="display" style="font-size:2.5rem;margin:4rem 0 1rem;">Our facilities</h2>
+    <p style="color:var(--lsc-gray-light);max-width:640px;font-size:1rem;line-height:1.6;margin-bottom:2rem;">From championship pools to a dedicated STEM lab — every space designed for performance and family.</p>
+    <div class="facility-grid" id="fac-grid"></div>
+  </div>
+</section>
+
+<a class="wa-widget" href="https://wa.me/201000000000" title="WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.5 2.1 7.9L.4 31.6l8-2.1c2.3 1.3 4.9 1.9 7.6 1.9h.1c8.6 0 15.6-6.9 15.6-15.6S24.6.4 16 .4z"/></svg>
+</a>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+<script>
+const ZONES = {
+  pool:     { badge:'Aquatic',  name:'Olympic Pool',     desc:'Newly expanded 50m Olympic-spec lane pool with adjacent kids learning pool. Heated year-round.', meta:[['Lanes','8 · 50m'],['Capacity','120 swimmers'],['Today','6:00 AM – 11:00 PM'],['Live','Open · 4 lanes free']], cta:'Book a swim slot', sport:'swimming' },
+  tennis:   { badge:'Racket',   name:'Tennis Courts',    desc:'Six championship courts — clay and hard surface mix, all floodlit for night play.', meta:[['Courts','6 · ITF spec'],['Surface','3 clay · 3 hard'],['Lights','Yes'],['Live','Court 3 · 4/6 booked']], cta:'Book a court', sport:'tennis' },
+  padel:    { badge:'Racket',   name:'Padel &amp; Squash',   desc:'Three competition-grade indoor padel courts plus four glass squash courts.', meta:[['Padel','3 indoor'],['Squash','4 glass-back'],['Booking','30/60 min'],['Live','Padel B · Full']], cta:'Book a court', sport:'padel' },
+  football: { badge:'Team',     name:'Football Field',   desc:'Full-size FIFA-grade artificial pitch with U-12 sub-pitch on the side.', meta:[['Type','FIFA · 11-a-side'],['Sub-pitch','7-a-side'],['Lights','LED · floodlit'],['Live','Training in progress']], cta:'Book a slot', sport:'football' },
+  gym:      { badge:'Fitness',  name:'Gym &amp; CrossFit Box', desc:'2,000 sqm strength &amp; conditioning facility, dedicated CrossFit zone, recovery suite.', meta:[['Floor','2,000 sqm'],['Equipment','Hammer Strength · Rogue'],['Trainers','7 on staff'],['Live','62/120 in']], cta:'Book a session', sport:'gym' },
+  cafe:     { badge:'Lounge',   name:'Cafe &amp; Lounge',     desc:'Member cafe serving smoothies, bowls, and post-workout fuel. Pre-order via the app.', meta:[['Seats','120'],['Menu','30+ items'],['Hours','7 AM – 11 PM'],['Live','12 tables free']], cta:'See the menu', sport:'gym' },
+  studios:  { badge:'Studio',   name:'Yoga &amp; Dance Studios', desc:'Three sprung-floor studios with mirrored walls — ballet, yoga, pilates, dance fitness.', meta:[['Studios','3'],['Classes/wk','40+'],['Capacity','25 each'],['Live','Yoga at 7 PM']], cta:'See the schedule', sport:'yoga' },
+  stem:     { badge:'Academy',  name:'STEM Lab',         desc:'Dedicated tech &amp; robotics lab where the STEM Workshop and Coding Academy run.', meta:[['Stations','12'],['Equipment','Arduino · 3D printer · Lego EV3'],['Workshops','Weekly'],['Next event','STEM Workshop · May 23']], cta:'View workshop', sport:'stem' },
+};
+
+document.querySelectorAll('.zone').forEach(z => {
+  z.addEventListener('mouseenter', () => updateZone(z.dataset.id, z));
+  z.addEventListener('click',      () => updateZone(z.dataset.id, z));
+});
+
+// Map facility IDs → photo files (we have 4: pool, tennis, gym, cafe)
+const ZONE_IMG = {
+  pool: 'facility-pool.jpg',
+  tennis: 'facility-tennis.jpg',
+  gym: 'facility-gym.jpg',
+  cafe: 'facility-cafe.jpg',
+};
+
+function updateZone(id, el) {
+  document.querySelectorAll('.zone').forEach(z => z.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const z = ZONES[id]; if (!z) return;
+  const photo = ZONE_IMG[id] ? `<div class="zone-photo" style="display:block;background-image:url('assets/${ZONE_IMG[id]}');"></div>` : '';
+  document.getElementById('zone-detail').innerHTML = `
+    ${photo}
+    <span class="badge">${z.badge}</span>
+    <h2>${z.name}</h2>
+    <p style="color:var(--lsc-gray-light);font-size:0.95rem;line-height:1.6;">${z.desc}</p>
+    <ul class="meta-list">${z.meta.map(([k,v]) => `<li><span>${k}</span><span class="v">${v}</span></li>`).join('')}</ul>
+    <a class="btn btn-primary" style="width:100%;" href="program-detail.html?sport=${z.sport}">${z.cta}</a>`;
+}
+
+// Facility cards (with photos where available)
+(function(){
+  const grid = document.getElementById('fac-grid');
+  grid.innerHTML = Object.entries(ZONES).map(([id, z], i) => {
+    const img = ZONE_IMG[id]
+      ? `<div class="img" style="background-image:url('assets/${ZONE_IMG[id]}');"></div>`
+      : `<div class="img" style="background:linear-gradient(135deg,#1a2a1a,#0a0a0a);"></div>`;
+    return `
+      <a href="#" onclick="document.querySelector('.zone[data-id=\\'${id}\\']').dispatchEvent(new Event('click'));window.scrollTo({top:0,behavior:'smooth'});return false;" class="card fac-card" style="text-decoration:none;color:inherit;">
+        ${img}
+        <div class="body">
+          <div class="fc-num">${String(i+1).padStart(2,'0')} · ${z.badge}</div>
+          <h3>${z.name}</h3>
+          <p>${z.desc.split('.')[0]}.</p>
+        </div>
+      </a>`;
+  }).join('');
+})();
+</script>
+</body>
+</html>

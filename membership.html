@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Membership · Tiers &amp; Pricing · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.tier-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; align-items: stretch; }
+@media (max-width: 900px) { .tier-grid { grid-template-columns: 1fr; } }
+.tier {
+  padding: 2rem; display: flex; flex-direction: column;
+  background: var(--lsc-dark-2); border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--radius-lg); position: relative;
+}
+.tier.popular { border: 1.5px solid var(--lsc-green); transform: scale(1.02); box-shadow: 0 30px 60px rgba(68,214,44,0.12); }
+.tier .pop-tag { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: var(--lsc-green); color: black; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.18em; padding: 0.3rem 0.8rem; border-radius: 999px; }
+.tier h3 { font-family: var(--font-display); font-size: 1.8rem; margin: 0 0 0.5rem; }
+.tier .price { font-family: var(--font-display); font-size: 3rem; color: var(--lsc-green); line-height: 1; margin: 0.5rem 0; }
+.tier .period { font-size: 0.85rem; color: var(--lsc-gray); }
+.tier ul { list-style: none; padding: 0; margin: 1.5rem 0; flex: 1; }
+.tier li { padding: 0.45rem 0; color: var(--lsc-gray-light); font-size: 0.92rem; display: flex; gap: 0.5rem; align-items: start; }
+.tier li::before { content: ''; flex-shrink: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--lsc-green); margin-top: 9px; }
+
+.compare-table { width: 100%; border-collapse: collapse; margin-top: 3rem; }
+.compare-table th, .compare-table td { padding: 1rem 1.25rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.9rem; }
+.compare-table th { font-family: var(--font-display); color: var(--lsc-white); font-size: 0.95rem; }
+.compare-table td { color: var(--lsc-gray-light); }
+.compare-table .check { color: var(--lsc-green); font-weight: 800; }
+.compare-table .dash { color: var(--lsc-gray); }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-logo" href="index.html"><img src="assets/logo.png" alt="LSC" /></a>
+  <div class="navbar-links">
+        <a href="programs.html" data-i18n="programs">Programs</a>
+    <a href="events.html" data-i18n="events">Events</a>
+    <a href="facilities.html" data-i18n="facilities">Facilities</a>
+    <a href="membership.html" class="active" data-i18n="membership">Membership</a>
+    <a href="app.html" data-i18n="mobileApp">Mobile App</a>
+    <a href="news.html" data-i18n="news">News</a>
+  </div>
+  <div class="navbar-actions">
+    <button class="chip lang-toggle" onclick="toggleLang()">عربي</button>
+    <a class="btn btn-ghost" href="login.html" data-i18n="loginShort">Login</a>
+  </div>
+</nav>
+
+<section class="section" style="padding-top:8rem;text-align:center;">
+  <div class="container">
+    <span class="eyebrow" data-i18n="membershipEyebrow">Membership</span>
+    <h1 class="display" style="font-size:clamp(2.5rem,5vw,5rem);margin:0.5rem 0 1rem;" data-i18n="membershipTitle">Pick the membership <span class="brand-grad">that fits your life.</span></h1>
+    <p style="color:var(--lsc-gray-light);max-width:580px;font-size:1.05rem;line-height:1.6;margin:0 auto 3rem;">All tiers include unlimited gym + pool access. Family bundles save 15% when 3+ members enrol.</p>
+
+    <div class="tier-grid" id="tier-grid"></div>
+
+    <p style="color:var(--lsc-gray);margin-top:2rem;font-size:0.85rem;">Prices in EGP per year · No hidden fees · Cancel anytime within first 30 days.</p>
+  </div>
+</section>
+
+<!-- Compare table -->
+<section class="section" style="background:var(--lsc-dark-2);">
+  <div class="container">
+    <span class="eyebrow">Compare</span>
+    <h2 class="display" style="font-size:clamp(2rem,4vw,3rem);margin:0.5rem 0 0.5rem;">Side-by-side comparison.</h2>
+    <p style="color:var(--lsc-gray-light);max-width:480px;">All the details, in one place.</p>
+
+    <div style="overflow-x:auto;margin-top:2rem;">
+      <table class="compare-table">
+        <thead>
+          <tr><th>Feature</th><th>Individual</th><th>Family of 4</th><th>Premium</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Sports access (all 20+)</td><td class="check">included</td><td class="check">included</td><td class="check">included</td></tr>
+          <tr><td>Members in plan</td><td>1</td><td>4</td><td>up to 4</td></tr>
+          <tr><td>Trial sessions / month</td><td>4</td><td>12</td><td>unlimited</td></tr>
+          <tr><td>Cafe credit / year</td><td class="dash">—</td><td>EGP 2,000</td><td>EGP 5,000</td></tr>
+          <tr><td>Private locker</td><td class="dash">—</td><td class="dash">—</td><td class="check">included</td></tr>
+          <tr><td>1:1 coach sessions / mo</td><td class="dash">—</td><td>2</td><td>4</td></tr>
+          <tr><td>Concierge booking</td><td class="dash">—</td><td class="dash">—</td><td class="check">included</td></tr>
+          <tr><td>Guest passes / year</td><td>2</td><td>5</td><td>10</td></tr>
+          <tr><td>Birthday party discount</td><td class="dash">—</td><td>15% off</td><td>25% off</td></tr>
+          <tr><td>Member events priority</td><td>standard</td><td class="check">priority</td><td class="check">VIP</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ-ish trust strip -->
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;">
+      <div class="card" style="padding:2rem;">
+        <h3 style="font-family:var(--font-display);font-size:1.4rem;margin:0 0 0.5rem;">Try before you commit</h3>
+        <p style="color:var(--lsc-gray-light);margin:0;font-size:0.9rem;line-height:1.6;">Book a free trial in any sport before signing up. No card needed.</p>
+      </div>
+      <div class="card" style="padding:2rem;">
+        <h3 style="font-family:var(--font-display);font-size:1.4rem;margin:0 0 0.5rem;">Cancel within 30 days</h3>
+        <p style="color:var(--lsc-gray-light);margin:0;font-size:0.9rem;line-height:1.6;">Full refund if it's not the right fit. No questions asked.</p>
+      </div>
+      <div class="card" style="padding:2rem;">
+        <h3 style="font-family:var(--font-display);font-size:1.4rem;margin:0 0 0.5rem;">Family bundle saving</h3>
+        <p style="color:var(--lsc-gray-light);margin:0;font-size:0.9rem;line-height:1.6;">Add 3 or more family members and save 15% automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<a class="wa-widget" href="https://wa.me/201000000000" title="WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.5 2.1 7.9L.4 31.6l8-2.1c2.3 1.3 4.9 1.9 7.6 1.9h.1c8.6 0 15.6-6.9 15.6-15.6S24.6.4 16 .4z"/></svg>
+</a>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+<script>
+(function(){
+  const grid = document.getElementById('tier-grid');
+  grid.innerHTML = window.LSC.membershipTiers.map(t => `
+    <div class="tier ${t.popular ? 'popular' : ''}">
+      ${t.popular ? '<span class="pop-tag">MOST POPULAR</span>' : ''}
+      <h3>${t.name}</h3>
+      <div class="price">EGP ${t.price.toLocaleString()}</div>
+      <div class="period">${t.period}</div>
+      <ul>${t.perks.map(p => `<li>${p}</li>`).join('')}</ul>
+      <a class="btn ${t.popular ? 'btn-primary' : 'btn-ghost'}" href="login.html" style="width:100%;justify-content:center;">Choose ${t.name}</a>
+    </div>`).join('');
+})();
+</script>
+</body>
+</html>

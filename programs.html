@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sports &amp; Programs · 20+ disciplines · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.programs-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+@media (max-width: 1100px) { .programs-grid { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 800px)  { .programs-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 500px)  { .programs-grid { grid-template-columns: 1fr; } }
+
+/* Every sport card now has a top "strip" — either a real photo or a patterned tile */
+.sport-card { padding: 0; overflow: hidden; cursor: pointer; }
+.sport-card .img-strip {
+  aspect-ratio: 1.6;
+  background-size: cover; background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+.sport-card .img-strip::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.75) 100%); }
+.sport-card .body { padding: 1.25rem 1.5rem 1.5rem; position: relative; }
+.sport-card .floating-badge { position: absolute; top: -22px; left: 1.25rem; box-shadow: 0 6px 20px rgba(0,0,0,0.4); border: 2px solid var(--lsc-dark-2); }
+.sport-card h3 { font-family: var(--font-display); font-size: 1.4rem; margin: 0.4rem 0 0.4rem; }
+.sport-card p { color: var(--lsc-gray-light); font-size: 0.85rem; margin: 0 0 1rem; line-height: 1.4; }
+.sport-card .meta { display: flex; justify-content: space-between; align-items: center; }
+
+/* Patterned tile for sports without photo: massive initial behind, sport-themed colored glow */
+.tile-art {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 900;
+  font-size: clamp(5rem, 9vw, 8rem); line-height: 1;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: -0.05em;
+  text-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  z-index: 1;
+}
+.tile-art-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background-image:
+    radial-gradient(circle at 25% 30%, var(--c1, rgba(68,214,44,0.45)), transparent 55%),
+    radial-gradient(circle at 75% 70%, var(--c2, rgba(68,214,44,0.2)), transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 18px);
+  background-color: #151515;
+}
+.tile-name {
+  position: absolute; bottom: 0.85rem; left: 1rem; right: 1rem;
+  z-index: 2;
+  font-family: var(--font-body); font-size: 0.65rem;
+  color: rgba(255,255,255,0.85); letter-spacing: 0.25em; font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Category sections */
+.cat-head { display: flex; justify-content: space-between; align-items: end; margin: 3rem 0 0.5rem; flex-wrap: wrap; gap: 1rem; }
+.cat-head h2 { font-family: var(--font-display); font-size: clamp(1.5rem,3vw,2.2rem); margin: 0; }
+.cat-head .cat-meta { font-size: 0.78rem; color: var(--lsc-gray); letter-spacing: 0.18em; text-transform: uppercase; }
+.cat-divider { height: 1px; background: linear-gradient(90deg, var(--lsc-green) 0%, transparent 50%); margin-bottom: 1.5rem; }
+.filter-bar { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; align-items: center; justify-content: space-between; }
+.quiz-cta {
+  display: flex; gap: 1rem; align-items: center; padding: 2rem; margin-bottom: 2.5rem;
+  background: linear-gradient(120deg, var(--lsc-dark-2), #1f1f1f);
+  border: 1px solid rgba(68,214,44,0.3); border-radius: var(--radius-lg);
+  flex-wrap: wrap;
+}
+.quiz-cta .quiz-icon { width: 56px; height: 56px; border-radius: 14px; background: rgba(68,214,44,0.12); color: var(--lsc-green); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
+.quiz-cta div.copy { flex: 1; min-width: 220px; }
+.quiz-cta h3 { margin: 0; font-size: 1.4rem; }
+.quiz-cta p { margin: 0.3rem 0 0; color: var(--lsc-gray-light); font-size: 0.92rem; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-logo" href="index.html"><img src="assets/logo.png" alt="LSC" /></a>
+  <div class="navbar-links">
+        <a href="programs.html" class="active" data-i18n="programs">Programs</a>
+    <a href="events.html" data-i18n="events">Events</a>
+    <a href="facilities.html" data-i18n="facilities">Facilities</a>
+    <a href="membership.html" data-i18n="membership">Membership</a>
+    <a href="app.html" data-i18n="mobileApp">Mobile App</a>
+    <a href="news.html" data-i18n="news">News</a>
+  </div>
+  <div class="navbar-actions">
+    <button class="chip lang-toggle" onclick="toggleLang()">عربي</button>
+    <a class="btn btn-ghost" href="login.html" data-i18n="loginShort">Login</a>
+    <a class="btn btn-primary" href="membership.html" data-i18n="join">Become a Member</a>
+  </div>
+</nav>
+
+<section class="section" style="padding-top:8rem;">
+  <div class="container">
+    <span class="eyebrow" data-i18n="programsEyebrow">Sports &amp; Programs</span>
+    <h1 class="display" style="font-size:clamp(2.5rem,5vw,4.5rem);margin:0.5rem 0 1rem;" data-i18n="programsTitle">20+ ways to <span class="brand-grad">live life.</span></h1>
+    <p style="color:var(--lsc-gray-light);max-width:640px;font-size:1.1rem;line-height:1.6;">Filter by category, age group, or coach. Live-capacity badges show where you can book today.</p>
+
+    <!-- Find your sport quiz CTA -->
+    <a href="quiz.html" class="quiz-cta" style="text-decoration:none;color:inherit;margin-top:2rem;">
+      <div class="quiz-icon"><span class="icon icon-spark"></span></div>
+      <div class="copy">
+        <h3>Not sure which sport is for you?</h3>
+        <p>Take our 60-second quiz and we'll match you with your ideal program.</p>
+      </div>
+      <span class="btn btn-primary">Find your sport</span>
+    </a>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+        <span class="chip active" data-cat="all" onclick="filterPrograms('all', event)">All</span>
+        <span class="chip" data-cat="team" onclick="filterPrograms('team', event)">Team</span>
+        <span class="chip" data-cat="racket" onclick="filterPrograms('racket', event)">Racket</span>
+        <span class="chip" data-cat="aquatic" onclick="filterPrograms('aquatic', event)">Aquatic</span>
+        <span class="chip" data-cat="fitness" onclick="filterPrograms('fitness', event)">Fitness</span>
+        <span class="chip" data-cat="martial" onclick="filterPrograms('martial', event)">Martial Arts</span>
+        <span class="chip" data-cat="individual" onclick="filterPrograms('individual', event)">Individual</span>
+        <span class="chip" data-cat="mind" onclick="filterPrograms('mind', event)">Mind &amp; Strategy</span>
+      </div>
+      <div style="color:var(--lsc-gray);font-size:0.85rem;" id="count"></div>
+    </div>
+
+    <!-- All programs grouped by category -->
+    <div id="grid"></div>
+  </div>
+</section>
+
+<a class="wa-widget" href="https://wa.me/201000000000" title="WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.5 2.1 7.9L.4 31.6l8-2.1c2.3 1.3 4.9 1.9 7.6 1.9h.1c8.6 0 15.6-6.9 15.6-15.6S24.6.4 16 .4zm0 28.5c-2.4 0-4.7-.7-6.7-1.9l-.5-.3-5 1.3 1.3-4.9-.3-.5c-1.4-2.1-2.1-4.6-2.1-7.1 0-7.3 6-13.3 13.3-13.3 3.6 0 6.9 1.4 9.4 3.9 2.5 2.5 3.9 5.9 3.9 9.4 0 7.4-6 13.4-13.3 13.4z"/></svg>
+</a>
+
+<footer class="footer">
+  <div class="footer-bottom" style="border:none;margin:0;padding:0;">
+    <span>© 2026 Life Sports Club</span>
+    <span>Reimagined by <strong style="color:var(--lsc-green)">Genesis Creations</strong></span>
+  </div>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+<script>
+(function(){
+  const grid = document.getElementById('grid');
+
+  // Photos available for these sports; rest use a patterned tile with sport-themed colors
+  const imgMap = {
+    tennis: 'sport-tennis.jpg',
+    swimming: 'sport-swimming.jpg',
+    football: 'sport-football.jpg',
+    stem: 'sport-stem.jpg',
+  };
+  // Some sports can borrow facility photos for variety
+  const fallbackImgMap = {
+    gym: 'facility-gym.jpg',
+    crossfit: 'facility-gym.jpg',
+    padel: 'facility-tennis.jpg',
+    squash: 'facility-tennis.jpg',
+  };
+
+  // Categories displayed in this exact order with proper labels
+  const CATEGORIES = [
+    { id: 'team',       label: 'Team Sports',       sub: 'Train together. Win together.' },
+    { id: 'racket',     label: 'Racket Sports',     sub: 'Tennis, Padel, Squash — championship courts.' },
+    { id: 'aquatic',    label: 'Aquatic',           sub: 'Olympic 50m pool · all ages.' },
+    { id: 'fitness',    label: 'Fitness & Wellness', sub: 'Strength, conditioning, recovery.' },
+    { id: 'martial',    label: 'Martial Arts',      sub: 'Discipline meets technique.' },
+    { id: 'individual', label: 'Individual',        sub: 'Personal growth, structured.' },
+    { id: 'mind',       label: 'Mind & Strategy',   sub: 'STEM, robotics, chess — sharpen the brain.' },
+  ];
+
+  // Render a single sport card — photo OR patterned tile
+  function renderCard(s) {
+    let strip;
+    if (imgMap[s.id]) {
+      strip = `<div class="img-strip" style="background-image:url('assets/${imgMap[s.id]}');"></div>`;
+    } else if (fallbackImgMap[s.id]) {
+      strip = `<div class="img-strip" style="background-image:url('assets/${fallbackImgMap[s.id]}');"></div>`;
+    } else {
+      // Patterned tile — uses the sport's brand color for the radial glow
+      const c = s.color;
+      const c1 = c + '70'; // ~44% alpha hex append
+      const c2 = c + '30';
+      strip = `
+        <div class="img-strip">
+          <div class="tile-art-bg" style="--c1:${c1};--c2:${c2};"></div>
+          <div class="tile-art" style="color:${c}AA;">${s.initial}</div>
+          <div class="tile-name">${s.name}</div>
+        </div>`;
+    }
+    return `
+      <a href="program-detail.html?sport=${s.id}" class="card sport-card" data-sport-cat="${s.cat}" style="text-decoration:none;color:inherit;">
+        ${strip}
+        <div class="body">
+          <div class="sport-badge sm floating-badge" style="background:${s.color}25;color:${s.color};">${s.initial}</div>
+          <h3>${s.name}</h3>
+          <p>${s.coach} · Ages ${s.ages}<br/>${s.schedule}</p>
+          <div class="meta">
+            ${capPill(s.spots)}
+            <span style="color:var(--lsc-white);font-weight:600;font-size:0.82rem;">${s.price}</span>
+          </div>
+        </div>
+      </a>`;
+  }
+
+  // Render category sections
+  let html = '';
+  CATEGORIES.forEach(cat => {
+    const sports = window.LSC.sports.filter(s => s.cat === cat.id);
+    if (!sports.length) return;
+    html += `
+      <section class="cat-section" data-cat-section="${cat.id}">
+        <div class="cat-head">
+          <div>
+            <h2>${cat.label}</h2>
+            <p style="color:var(--lsc-gray-light);font-size:0.95rem;margin:0.25rem 0 0;">${cat.sub}</p>
+          </div>
+          <span class="cat-meta">${sports.length} program${sports.length>1?'s':''}</span>
+        </div>
+        <div class="cat-divider"></div>
+        <div class="programs-grid">
+          ${sports.map(renderCard).join('')}
+        </div>
+      </section>`;
+  });
+  grid.innerHTML = html;
+
+  document.getElementById('count').textContent = `${window.LSC.sports.length} programs · ${CATEGORIES.length} categories`;
+})();
+
+// Override filterPrograms to filter by category section, not just card visibility
+function filterPrograms(category, ev) {
+  document.querySelectorAll('.chip[data-cat]').forEach(c => c.classList.remove('active'));
+  if (ev) ev.currentTarget.classList.add('active');
+  document.querySelectorAll('[data-cat-section]').forEach(sec => {
+    const id = sec.getAttribute('data-cat-section');
+    sec.style.display = (category === 'all' || id === category) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

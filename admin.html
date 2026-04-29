@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Admin Console · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.admin-grid { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; padding-top: 64px; }
+@media (max-width: 1000px) { .admin-grid { grid-template-columns: 1fr; } }
+
+.admin-side {
+  background: var(--lsc-black); border-right: 1px solid rgba(255,255,255,0.05);
+  padding: 1.5rem 1rem; height: calc(100vh - 64px); position: sticky; top: 64px;
+}
+.admin-side .role-tag { display: inline-block; padding: 0.3rem 0.7rem; background: rgba(68,214,44,0.15); color: var(--lsc-green); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; border-radius: 999px; margin-bottom: 1.5rem; }
+.admin-side .item { display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 0.9rem; border-radius: 10px; color: var(--lsc-gray-light); text-decoration: none; font-size: 0.9rem; cursor: pointer; transition: all 0.15s; }
+.admin-side .item:hover { background: rgba(255,255,255,0.04); color: var(--lsc-white); }
+.admin-side .item.active { background: var(--lsc-dark-2); color: var(--lsc-green); border-left: 2px solid var(--lsc-green); padding-left: calc(0.9rem - 2px); }
+.admin-side .group { font-size: 0.7rem; color: var(--lsc-gray); letter-spacing: 0.18em; text-transform: uppercase; margin: 1.5rem 0 0.5rem; padding-left: 0.9rem; }
+
+.admin-main { padding: 2rem 2.5rem; background: var(--lsc-dark); }
+.admin-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+.admin-head h1 { font-family: var(--font-display); font-size: 2rem; margin: 0; }
+
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+@media (max-width: 1100px) { .kpi-row { grid-template-columns: repeat(2,1fr); } }
+.kpi {
+  padding: 1.25rem 1.5rem; background: var(--lsc-dark-2); border: 1px solid rgba(255,255,255,0.05);
+  border-radius: var(--radius-md);
+}
+.kpi .lbl { font-size: 0.7rem; color: var(--lsc-gray); letter-spacing: 0.18em; text-transform: uppercase; }
+.kpi .val { font-family: var(--font-display); font-size: 2.4rem; font-weight: 900; color: var(--lsc-green); line-height: 1; margin: 0.4rem 0 0.3rem; }
+.kpi .delta { font-size: 0.78rem; color: var(--lsc-gray-light); }
+.kpi .delta.up { color: var(--lsc-green); }
+.kpi .delta.dn { color: var(--lsc-red); }
+
+.upload-zone {
+  margin-top: 2rem; padding: 3rem 2rem;
+  background: linear-gradient(135deg, var(--lsc-dark-2), #1f1f1f);
+  border: 2px dashed rgba(68,214,44,0.4); border-radius: var(--radius-lg); text-align: center;
+  cursor: pointer; transition: all 0.2s;
+}
+.upload-zone:hover { border-color: var(--lsc-green); background: rgba(68,214,44,0.04); }
+.upload-zone .uz-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--lsc-green); color: black; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; font-size: 1.5rem; }
+.upload-zone h3 { font-family: var(--font-display); font-size: 1.4rem; margin: 0 0 0.5rem; }
+.upload-zone p { color: var(--lsc-gray-light); margin: 0; font-size: 0.9rem; }
+
+.media-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.75rem; margin-top: 1.5rem; }
+@media (max-width: 800px) { .media-grid { grid-template-columns: repeat(2,1fr); } }
+.media-item {
+  aspect-ratio: 1; border-radius: 12px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a); display: flex; align-items: end;
+  padding: 0.7rem; font-size: 0.75rem; color: white; font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+.media-item:nth-child(1) { background: linear-gradient(135deg, var(--lsc-green-glow), #1a1a1a 70%); }
+.media-item:nth-child(2) { background: linear-gradient(135deg, rgba(255,217,61,0.4), #1a1a1a 70%); }
+.media-item:nth-child(3) { background: linear-gradient(135deg, rgba(79,195,247,0.4), #1a1a1a 70%); }
+.media-item:nth-child(4) { background: linear-gradient(135deg, rgba(255,112,67,0.4), #1a1a1a 70%); }
+.media-item:nth-child(5) { background: linear-gradient(135deg, rgba(171,71,188,0.4), #1a1a1a 70%); }
+.media-item:nth-child(6) { background: linear-gradient(135deg, rgba(38,198,218,0.4), #1a1a1a 70%); }
+.media-item:nth-child(7) { background: linear-gradient(135deg, rgba(239,83,80,0.4), #1a1a1a 70%); }
+.media-item:nth-child(8) { background: linear-gradient(135deg, rgba(102,187,106,0.4), #1a1a1a 70%); }
+.media-item .pub-tag { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.2rem 0.5rem; background: var(--lsc-green); color: black; font-size: 0.6rem; font-weight: 800; border-radius: 4px; letter-spacing: 0.1em; }
+.media-item .draft-tag { position: absolute; top: 0.5rem; right: 0.5rem; padding: 0.2rem 0.5rem; background: var(--lsc-amber); color: black; font-size: 0.6rem; font-weight: 800; border-radius: 4px; letter-spacing: 0.1em; }
+
+.publish-bar {
+  margin-top: 1.5rem; padding: 1.25rem 1.5rem;
+  background: linear-gradient(120deg, rgba(68,214,44,0.08), rgba(68,214,44,0.02));
+  border: 1px solid rgba(68,214,44,0.3); border-radius: var(--radius-md);
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+
+.activity-feed { padding: 1.5rem; background: var(--lsc-dark-2); border-radius: var(--radius-md); margin-top: 1.5rem; }
+.activity-feed .row { display: flex; gap: 0.85rem; padding: 0.7rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.activity-feed .row:last-child { border: none; }
+.activity-feed .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lsc-green); flex-shrink: 0; margin-top: 8px; }
+.activity-feed .row .text { color: var(--lsc-gray-light); font-size: 0.9rem; }
+.activity-feed .row .when { font-size: 0.78rem; color: var(--lsc-gray); margin-left: auto; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<nav class="navbar" style="padding:0.85rem 2rem;">
+  <a class="navbar-logo" href="index.html"><img src="assets/logo.png" alt="LSC" /><span style="margin-left:0.6rem;font-family:var(--font-display);font-weight:800;font-size:0.85rem;letter-spacing:0.25em;color:var(--lsc-gray-light);">ADMIN</span></a>
+  <div style="display:flex;gap:0.6rem;align-items:center;">
+    <span class="chip" style="background:rgba(68,214,44,0.15);color:var(--lsc-green);">SUPER ADMIN</span>
+    <span style="color:var(--lsc-gray-light);font-size:0.85rem;">Mona K.</span>
+    <a class="btn btn-ghost" href="login.html" style="font-size:0.8rem;">Sign out</a>
+  </div>
+</nav>
+
+<div class="admin-grid">
+
+  <!-- Sidebar -->
+  <aside class="admin-side">
+    <span class="role-tag">Admin Console</span>
+    <a class="item active"><span class="icon icon-home"></span>Dashboard</a>
+    <a class="item"><span class="icon icon-grid"></span>Programs</a>
+    <a class="item"><span class="icon icon-calendar"></span>Bookings</a>
+    <a class="item"><span class="icon icon-user"></span>Members</a>
+
+    <div class="group">Content</div>
+    <a class="item"><span class="icon icon-card"></span>Media Portal</a>
+    <a class="item"><span class="icon icon-bolt"></span>Events</a>
+    <a class="item"><span class="icon icon-chat"></span>News</a>
+
+    <div class="group">System</div>
+    <a class="item"><span class="icon icon-cog"></span>Settings</a>
+    <a class="item"><span class="icon icon-spark"></span>Analytics</a>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <div class="admin-head">
+      <div>
+        <span class="eyebrow">Today · Wed Apr 29, 2026</span>
+        <h1>Operations dashboard</h1>
+      </div>
+      <div style="display:flex;gap:0.5rem;">
+        <span class="chip">Live</span>
+        <button class="btn btn-ghost" style="font-size:0.85rem;">Export report</button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-row">
+      <div class="kpi">
+        <div class="lbl">Bookings today</div>
+        <div class="val">147</div>
+        <div class="delta up">+12% vs avg</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Members on-site</div>
+        <div class="val">412</div>
+        <div class="delta up">+8 in last 10 min</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">Cafe revenue</div>
+        <div class="val">EGP 24K</div>
+        <div class="delta up">+18% vs yesterday</div>
+      </div>
+      <div class="kpi">
+        <div class="lbl">App active users</div>
+        <div class="val">3,847</div>
+        <div class="delta up">+5% week-on-week</div>
+      </div>
+    </div>
+
+    <!-- Media Portal -->
+    <div style="margin-top:2.5rem;">
+      <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:1rem;">
+        <div>
+          <span class="eyebrow">Admin Media Portal</span>
+          <h2 style="font-family:var(--font-display);font-size:1.6rem;margin:0.3rem 0;">Upload &amp; publish media in seconds.</h2>
+          <p style="color:var(--lsc-gray-light);font-size:0.92rem;margin:0;">No developer needed. Drop files, pick album, click publish.</p>
+        </div>
+        <button class="btn btn-primary" onclick="toast('Upload dialog would open');">Upload media</button>
+      </div>
+
+      <div class="upload-zone" onclick="toast('File picker opened');">
+        <div class="uz-icon">+</div>
+        <h3>Drop photos &amp; videos here</h3>
+        <p>JPG, PNG, WEBP, MP4, MOV · Auto-compressed and pushed to S3 + CloudFront</p>
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;">
+        <div style="display:flex;gap:0.4rem;">
+          <span class="chip active">Recent uploads</span>
+          <span class="chip">Drafts (3)</span>
+          <span class="chip">Published (412)</span>
+          <span class="chip">All albums</span>
+        </div>
+        <span style="color:var(--lsc-gray);font-size:0.85rem;">8 selected</span>
+      </div>
+
+      <div class="media-grid">
+        <div class="media-item"><span class="pub-tag">LIVE</span>Tennis Open · Final</div>
+        <div class="media-item"><span class="pub-tag">LIVE</span>Pool Reno · Day 1</div>
+        <div class="media-item"><span class="draft-tag">DRAFT</span>STEM Cohort 04</div>
+        <div class="media-item"><span class="pub-tag">LIVE</span>Football U-12 final</div>
+        <div class="media-item"><span class="pub-tag">LIVE</span>Yoga Sunset Class</div>
+        <div class="media-item"><span class="draft-tag">DRAFT</span>Padel Court Opening</div>
+        <div class="media-item"><span class="pub-tag">LIVE</span>Cafe New Menu</div>
+        <div class="media-item"><span class="draft-tag">DRAFT</span>Member Spotlight: Yara</div>
+      </div>
+
+      <div class="publish-bar">
+        <div>
+          <div style="font-weight:700;">8 items ready to publish</div>
+          <div style="color:var(--lsc-gray-light);font-size:0.85rem;">Will appear on the Website Gallery and the Mobile App Media tab.</div>
+        </div>
+        <div style="display:flex;gap:0.5rem;">
+          <button class="btn btn-ghost">Save as draft</button>
+          <button class="btn btn-primary" onclick="toast('Published 8 items to Web + App');">Publish to Web + App</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity feed -->
+    <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:1.25rem;margin-top:2rem;">
+      <div>
+        <h3 style="font-family:var(--font-display);font-size:1.2rem;margin:0 0 1rem;">Recent system activity</h3>
+        <div class="activity-feed">
+          <div class="row"><div class="dot"></div><div class="text">Admin <strong style="color:white;">Mona K.</strong> uploaded 8 media items to album "Tennis Open"</div><div class="when">2 min ago</div></div>
+          <div class="row"><div class="dot"></div><div class="text">Member <strong style="color:white;">Ahmed Sherif</strong> reserved STEM Workshop for Hamza</div><div class="when">11 min ago</div></div>
+          <div class="row"><div class="dot"></div><div class="text">Coach <strong style="color:white;">Nadia</strong> updated Tennis schedule for next week</div><div class="when">38 min ago</div></div>
+          <div class="row"><div class="dot"></div><div class="text">3 new memberships purchased via the website</div><div class="when">1 hr ago</div></div>
+          <div class="row"><div class="dot"></div><div class="text">Push notification sent to 3,847 app users: "STEM Workshop — 8 spots left"</div><div class="when">2 hrs ago</div></div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-family:var(--font-display);font-size:1.2rem;margin:0 0 1rem;">Storage</h3>
+        <div class="kpi" style="margin-bottom:0.7rem;">
+          <div class="lbl">S3 used</div>
+          <div class="val" style="font-size:1.8rem;">128 GB</div>
+          <div class="delta">of 500 GB · CDN cost est. $42/mo</div>
+        </div>
+        <div class="kpi">
+          <div class="lbl">Last backup</div>
+          <div class="val" style="font-size:1.8rem;">12 min</div>
+          <div class="delta up">healthy</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+</body>
+</html>

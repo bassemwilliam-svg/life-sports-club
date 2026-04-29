@@ -1,0 +1,161 @@
+// =============================================================================
+// LSC Demo — Single Source of Truth
+// Edit values here to update content across all pages
+// =============================================================================
+
+window.LSC = {
+  club: {
+    name: 'Life Sports Club',
+    short: 'LSC',
+    tagline: 'Grow Champions. Live Life.',
+    location: 'Mohamed Naguib Axis, New Cairo, Egypt',
+    phone: '+20 100 000 0000',
+    whatsapp: '+201000000000',
+    email: 'info@lifesportsclub.com',
+    social: {
+      instagram: 'lifesportsclub',
+      facebook: 'lifesportsclub',
+      youtube: 'lifesportsclub',
+    },
+    stats: [
+      { num: '25', label: 'Acres Campus' },
+      { num: '20+', label: 'Sports Programs' },
+      { num: '10K+', label: 'Active Community' },
+      { num: '2021', label: 'Established' },
+    ],
+  },
+
+  sports: [
+    { id: 'football',   name: 'Football',     initial: 'F',  cat: 'team',     ages: '5-18', schedule: 'Sat–Thu',  capacity: 'low',  spots: 3,  price: 'EGP 2,400/mo', coach: 'Coach Karim', color: '#44D62C' },
+    { id: 'tennis',     name: 'Tennis',       initial: 'T',  cat: 'racket',   ages: '6+',   schedule: 'Daily',     capacity: 'ok',   spots: 11, price: 'EGP 3,200/mo', coach: 'Coach Nadia', color: '#FFD93D' },
+    { id: 'swimming',   name: 'Swimming',     initial: 'S',  cat: 'aquatic',  ages: '4+',   schedule: 'Mon–Sat',   capacity: 'ok',   spots: 18, price: 'EGP 2,800/mo', coach: 'Coach Mahmoud', color: '#4FC3F7' },
+    { id: 'basketball', name: 'Basketball',   initial: 'B',  cat: 'team',     ages: '8-18', schedule: 'Sun–Thu',   capacity: 'low',  spots: 4,  price: 'EGP 2,200/mo', coach: 'Coach Ahmed', color: '#FF7043' },
+    { id: 'padel',      name: 'Padel',        initial: 'P',  cat: 'racket',   ages: '12+',  schedule: 'Daily',     capacity: 'full', spots: 0,  price: 'EGP 3,500/mo', coach: 'Coach Omar',  color: '#26C6DA' },
+    { id: 'squash',     name: 'Squash',       initial: 'Sq', cat: 'racket',   ages: '10+',  schedule: 'Mon–Fri',   capacity: 'ok',   spots: 9,  price: 'EGP 2,600/mo', coach: 'Coach Tarek', color: '#AB47BC' },
+    { id: 'gym',        name: 'Strength & Gym', initial: 'G', cat: 'fitness', ages: '14+',  schedule: 'Daily 6a-11p', capacity: 'ok', spots: 22, price: 'EGP 1,800/mo', coach: 'Coach Sara',  color: '#EF5350' },
+    { id: 'crossfit',   name: 'CrossFit',     initial: 'X',  cat: 'fitness',  ages: '16+',  schedule: 'Sat–Thu',   capacity: 'low',  spots: 5,  price: 'EGP 2,500/mo', coach: 'Coach Yara',  color: '#FFCA28' },
+    { id: 'karate',     name: 'Karate',       initial: 'K',  cat: 'martial',  ages: '5+',   schedule: 'Sun–Wed',   capacity: 'ok',   spots: 12, price: 'EGP 2,000/mo', coach: 'Sensei Hany', color: '#8D6E63' },
+    { id: 'taekwondo',  name: 'Taekwondo',    initial: 'Tk', cat: 'martial',  ages: '6+',   schedule: 'Mon–Thu',   capacity: 'ok',   spots: 14, price: 'EGP 2,000/mo', coach: 'Master Lee',  color: '#42A5F5' },
+    { id: 'judo',       name: 'Judo',         initial: 'J',  cat: 'martial',  ages: '8+',   schedule: 'Tue–Sat',   capacity: 'ok',   spots: 10, price: 'EGP 2,100/mo', coach: 'Sensei Ali',  color: '#7E57C2' },
+    { id: 'gymnastics', name: 'Gymnastics',   initial: 'Gy', cat: 'individual', ages: '4-14', schedule: 'Sat–Thu', capacity: 'low', spots: 6,  price: 'EGP 2,400/mo', coach: 'Coach Mona',  color: '#EC407A' },
+    { id: 'ballet',     name: 'Ballet & Dance', initial: 'D', cat: 'individual', ages: '4+',  schedule: 'Sun–Thu', capacity: 'ok', spots: 15, price: 'EGP 1,900/mo', coach: 'Madame Yasmin', color: '#F06292' },
+    { id: 'horseback',  name: 'Equestrian',   initial: 'E',  cat: 'individual', ages: '8+',   schedule: 'By appt',   capacity: 'low', spots: 2, price: 'EGP 4,500/mo', coach: 'Coach Sherif', color: '#A1887F' },
+    { id: 'volleyball', name: 'Volleyball',   initial: 'V',  cat: 'team',     ages: '10+',  schedule: 'Mon–Fri',   capacity: 'ok',   spots: 16, price: 'EGP 2,000/mo', coach: 'Coach Dina',  color: '#66BB6A' },
+    { id: 'handball',   name: 'Handball',     initial: 'H',  cat: 'team',     ages: '10-18',schedule: 'Sun–Wed',   capacity: 'ok',   spots: 13, price: 'EGP 2,000/mo', coach: 'Coach Hossam', color: '#5C6BC0' },
+    { id: 'cycling',    name: 'Cycling',      initial: 'C',  cat: 'fitness',  ages: '12+',  schedule: 'Fri/Sat AM', capacity: 'ok',  spots: 25, price: 'EGP 1,500/mo', coach: 'Coach Mostafa', color: '#26A69A' },
+    { id: 'yoga',       name: 'Yoga & Pilates', initial: 'Y', cat: 'fitness', ages: '14+',  schedule: 'Daily',     capacity: 'ok',   spots: 8,  price: 'EGP 1,800/mo', coach: 'Coach Layla', color: '#BA68C8' },
+    { id: 'chess',      name: 'Chess Academy', initial: 'Ch', cat: 'mind',    ages: '6+',   schedule: 'Sun, Wed',  capacity: 'ok',   spots: 20, price: 'EGP 1,200/mo', coach: 'GM Adel',     color: '#90A4AE' },
+    { id: 'stem',       name: 'STEM & Robotics', initial: 'R', cat: 'mind',  ages: '7-16', schedule: 'Workshops', capacity: 'low',  spots: 4,  price: 'EGP 3,100/2 days', coach: 'Eng. Hossam', color: '#44D62C', featured: true },
+  ],
+
+  events: [
+    {
+      id: 'stem-traffic-light',
+      title: 'STEM Robotics Workshop',
+      subtitle: 'Build a Smart Traffic Light with Arduino',
+      date: '2026-05-23',
+      dateLabel: 'May 23–24, 2026',
+      duration: '2 days · 2 hrs/day',
+      ages: ['7–12', '13–16'],
+      location: 'STEM Lab, Building C',
+      price: 'EGP 3,100',
+      priceNote: 'per student · includes Arduino kit + materials + certificate',
+      spotsTotal: 12,
+      spotsLeft: 8,
+      featured: true,
+      tagline: 'Hands-on electronics, coding & teamwork — your child builds a working traffic-light system.',
+      curriculum: [
+        { day: 'Day 1', title: 'Arduino & Circuits', topics: ['Meet your Arduino board', 'Build basic LED circuits', 'Write your first code', 'Read a circuit diagram'] },
+        { day: 'Day 2', title: 'Traffic Logic & Project Demo', topics: ['Build the full traffic light system', 'Code the timing logic', 'Test & debug as a team', 'Live demo to parents + certificate ceremony'] },
+      ],
+      materials: ['Arduino Uno board', 'Breadboard', 'Red / Yellow / Green LEDs', 'Resistors & jumper wires', 'USB cable', 'Take-home kit'],
+      objectives: ['Understand basic electronics', 'Use Arduino & write simple code', 'Control LEDs with logic', 'Build a real traffic-light system', 'Develop problem-solving skills'],
+      whyChoose: ['Experienced STEM instructors', 'Hands-on, fun methodology', 'Strong, demonstrable results', 'Take-home Arduino kit', 'Parent demo day'],
+      instructor: { name: 'Eng. Hossam Adel', title: 'STEM & Robotics Lead', bio: '10+ years teaching robotics to youth. Former judge at FIRST LEGO League Egypt.', avatar: 'HA' },
+    },
+    { id: 'football-camp', title: 'Summer Football Camp', subtitle: '2 weeks of intensive training', date: '2026-07-05', dateLabel: 'Jul 5–18, 2026', duration: '2 weeks · daily', ages: ['8–14'], price: 'EGP 8,500', spotsTotal: 40, spotsLeft: 22, tagline: 'Train like a pro with our certified coaches.' },
+    { id: 'tennis-open',  title: 'LSC Open Tennis Tournament', subtitle: 'All ages welcome', date: '2026-06-12', dateLabel: 'Jun 12–14, 2026', duration: '3 days', ages: ['Junior', 'Adult'], price: 'EGP 600 entry', spotsTotal: 64, spotsLeft: 19, tagline: 'Compete on our championship clay courts.' },
+    { id: 'family-swim',  title: 'Family Swim Day', subtitle: 'Pool party + coaching clinics', date: '2026-05-30', dateLabel: 'May 30, 2026', duration: '1 day', ages: ['All ages'], price: 'Free for members', spotsTotal: 200, spotsLeft: 87, tagline: 'A weekend of fun for the whole family.' },
+  ],
+
+  news: [
+    { title: 'LSC named "Best New Sports Club" by Egypt Sports Awards 2026', date: '2026-04-02', excerpt: 'Our 25-acre campus and elite coaching team recognized at the national level.', img: 'award' },
+    { title: 'New Padel courts open this weekend', date: '2026-03-28', excerpt: 'Three competition-grade indoor courts now bookable through the app.', img: 'padel' },
+    { title: 'Coach Karim qualifies youth team for African finals', date: '2026-03-15', excerpt: 'U-14 squad heads to Casablanca after dominant regional performance.', img: 'football' },
+    { title: 'Pool renovation complete — 50m Olympic lane added', date: '2026-03-01', excerpt: 'Members can now train in our newly expanded aquatic complex.', img: 'pool' },
+  ],
+
+  testimonials: [
+    { name: 'Mona K.', role: 'Parent · 2 years member', quote: 'My son went from shy to team captain in one season. The coaches actually care about each kid.', rating: 5 },
+    { name: 'Hassan M.', role: 'Adult member', quote: 'Easily the best gym + tennis combo in Cairo. The facility is hotel-grade.', rating: 5 },
+    { name: 'Yara A.', role: 'Family of 4 member', quote: 'Booking is easy, the cafe is great, the kids love it. Worth every pound.', rating: 5 },
+  ],
+
+  membershipTiers: [
+    { name: 'Individual', price: 28000, period: '/year', perks: ['Access to all sports', 'Gym + pool unlimited', '4 trial sessions/month', 'Member events'] },
+    { name: 'Family of 4', price: 65000, period: '/year', popular: true, perks: ['Everything in Individual', '4 family members', 'Family events priority', 'Birthday party discount', 'Cafe credit EGP 2,000'] },
+    { name: 'Premium', price: 95000, period: '/year', perks: ['Everything in Family', 'Private locker', '1:1 coach sessions', 'Concierge booking', 'Guest passes (10/yr)'] },
+  ],
+
+  loggedInMember: {
+    name: 'Ahmed Sherif',
+    tier: 'Family of 4',
+    memberSince: '2024',
+    memberId: 'LSC-2024-1847',
+    points: 2450,
+    nextReward: 'Free padel session at 3,000 pts',
+    upcomingBookings: [
+      { sport: 'Tennis', date: 'Tomorrow · 6:00 PM', coach: 'Coach Nadia', court: 'Court 3' },
+      { sport: 'Swimming', date: 'Sat · 9:00 AM', coach: 'Coach Mahmoud', court: 'Olympic Pool' },
+      { sport: 'Football (Hamza)', date: 'Sun · 4:00 PM', coach: 'Coach Karim', court: 'Field A' },
+    ],
+    family: [
+      { name: 'Ahmed (you)', age: 38, avatar: 'A' },
+      { name: 'Yasmin',      age: 35, avatar: 'Y' },
+      { name: 'Hamza',       age: 11, avatar: 'H' },
+      { name: 'Layla',        age: 7, avatar: 'L' },
+    ],
+  },
+
+  i18n: {
+    en: {
+      home: 'Home', programs: 'Programs', events: 'Events', facilities: 'Facilities', membership: 'Membership', news: 'News', mobileApp: 'Mobile App',
+      login: 'Member Login', loginShort: 'Login', book: 'Book a Trial', join: 'Become a Member',
+      heroEyebrow: 'Premier Sports Club · New Cairo',
+      heroTitle: 'GROW CHAMPIONS.<br/>LIVE LIFE.',
+      heroLead: '20+ sports disciplines. Internationally certified coaches. A 25-acre campus designed for athletes, families, and champions in the making.',
+      heroFindSport: 'Find your sport',
+      // Page titles / common headings
+      programsEyebrow: 'Sports & Programs',
+      programsTitle: '20+ ways to <span class="brand-grad">live life.</span>',
+      programsSub: 'Filter by category, age group, or coach. Live-capacity badges show where you can book today.',
+      eventsEyebrow: 'Events & Workshops',
+      eventsTitle: "What's <span class=\"brand-grad\">happening at LSC.</span>",
+      facilitiesEyebrow: '25-acre campus · New Cairo',
+      facilitiesTitle: 'Hover the map. <span class="brand-grad">Tour the club.</span>',
+      membershipEyebrow: 'Membership',
+      membershipTitle: 'Pick the membership <span class="brand-grad">that fits your life.</span>',
+      newsEyebrow: 'News & Stories',
+      newsTitle: 'From the <span class="brand-grad">life of LSC.</span>',
+    },
+    ar: {
+      home: 'الرئيسية', programs: 'البرامج', events: 'الفعاليات', facilities: 'المرافق', membership: 'العضوية', news: 'الأخبار', mobileApp: 'تطبيق الجوال',
+      login: 'تسجيل الدخول', loginShort: 'دخول', book: 'احجز تجربة', join: 'انضم الآن',
+      heroEyebrow: 'نادي رياضي رائد · القاهرة الجديدة',
+      heroTitle: 'اصنع الأبطال.<br/>عش الحياة.',
+      heroLead: 'أكثر من 20 رياضة. مدربون معتمدون دوليًا. حرم رياضي على 25 فدانًا صُمم للرياضيين والعائلات والأبطال.',
+      heroFindSport: 'اكتشف رياضتك',
+      programsEyebrow: 'الرياضات والبرامج',
+      programsTitle: 'أكثر من ٢٠ طريقة <span class="brand-grad">لعيش الحياة.</span>',
+      programsSub: 'صفِّ حسب الفئة، الفئة العمرية، أو المدرب. شارات السعة تُظهر أين يمكنك الحجز اليوم.',
+      eventsEyebrow: 'الفعاليات وورش العمل',
+      eventsTitle: 'ماذا يحدث <span class="brand-grad">في LSC؟</span>',
+      facilitiesEyebrow: 'حرم ٢٥ فدانًا · القاهرة الجديدة',
+      facilitiesTitle: 'مرّر فوق الخريطة. <span class="brand-grad">استكشف النادي.</span>',
+      membershipEyebrow: 'العضوية',
+      membershipTitle: 'اختر العضوية <span class="brand-grad">المناسبة لحياتك.</span>',
+      newsEyebrow: 'الأخبار والقصص',
+      newsTitle: 'من <span class="brand-grad">قلب LSC.</span>',
+    },
+  },
+};

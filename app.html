@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LSC Mobile App · iOS &amp; Android Preview · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+body { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); min-height: 100vh; }
+
+.app-stage {
+  display: grid; grid-template-columns: 320px 1fr; gap: 3rem; padding: 6rem 2rem 4rem;
+  max-width: 1440px; margin: 0 auto;
+}
+@media (max-width: 1100px) { .app-stage { grid-template-columns: 1fr; } }
+
+.app-info { padding-top: 2rem; }
+.app-info h1 { font-size: clamp(2rem, 4vw, 3.5rem); margin: 0 0 1rem; }
+.app-info p { color: var(--lsc-gray-light); line-height: 1.6; }
+
+.screen-list { background: var(--lsc-dark-2); border-radius: var(--radius-lg); padding: 1rem; margin-top: 2rem; max-height: 540px; overflow-y: auto; }
+.screen-list .item {
+  display: flex; align-items: center; gap: 0.7rem; padding: 0.7rem 0.9rem; border-radius: 10px;
+  cursor: pointer; transition: all 0.15s; color: var(--lsc-gray-light); font-size: 0.9rem;
+}
+.screen-list .item:hover { background: rgba(255,255,255,0.05); color: var(--lsc-white); }
+.screen-list .item.active { background: var(--lsc-green); color: var(--lsc-black); font-weight: 700; }
+.screen-list .item .num { width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex-shrink: 0; font-weight: 700; }
+.screen-list .item.active .num { background: rgba(0,0,0,0.2); color: var(--lsc-black); }
+
+.phone-stage { display: flex; justify-content: center; align-items: start; }
+
+/* Mobile screens */
+.m-screen {
+  display: none; width: 100%; height: 100%;
+  overflow-y: auto;
+  background: var(--lsc-dark);
+  color: var(--lsc-white);
+  padding-top: 50px;
+  font-size: 14px;
+}
+.m-screen.active { display: block; }
+.m-screen::-webkit-scrollbar { display: none; }
+
+.status-bar { position: absolute; top: 17px; left: 32px; right: 32px; display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: white; z-index: 10; pointer-events: none; }
+.status-bar .right { display: flex; gap: 6px; align-items: center; font-size: 10px; }
+
+/* Bottom tab bar */
+.tab-bar {
+  position: absolute; bottom: 14px; left: 14px; right: 14px;
+  background: rgba(20,20,20,0.95); backdrop-filter: blur(20px);
+  border-radius: 28px; padding: 0.6rem;
+  display: flex; justify-content: space-around;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.tab-bar .tab { background: none; border: none; color: var(--lsc-gray); padding: 0.4rem; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: inherit; }
+.tab-bar .tab.active { color: var(--lsc-green); }
+.tab-bar .tab .icon { font-size: 18px; }
+.tab-bar .tab .lbl { font-size: 9px; letter-spacing: 0.05em; font-weight: 600; }
+
+/* Generic mobile pieces */
+.m-pad { padding: 0 1rem 100px; }
+.m-h1 { font-family: var(--font-display); font-weight: 900; font-size: 1.6rem; margin: 0.5rem 0; line-height: 1; }
+.m-h2 { font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; margin: 1rem 0 0.5rem; }
+.m-row { display: flex; align-items: center; justify-content: space-between; }
+.m-card { background: var(--lsc-dark-2); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; padding: 0.85rem; margin-bottom: 0.7rem; }
+.m-tile { background: var(--lsc-dark-2); border-radius: 14px; padding: 1rem; }
+.m-eyebrow { font-size: 10px; color: var(--lsc-gray); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; }
+
+/* Splash */
+.m-splash {
+  height: 100%; padding-top: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(circle at center, rgba(68,214,44,0.2), transparent 60%), var(--lsc-dark);
+}
+.m-splash img { width: 110px; opacity: 0.95; animation: float 3s ease-in-out infinite; filter: drop-shadow(0 0 30px var(--lsc-green-glow)); }
+@keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.m-splash .wm { font-family: var(--font-display); font-weight: 900; font-size: 2rem; margin-top: 1rem; }
+.m-splash .wm span { color: var(--lsc-green); }
+.geo-toast { position: absolute; top: 70px; left: 14px; right: 14px; background: rgba(68,214,44,0.95); color: black; padding: 0.7rem 1rem; border-radius: 12px; font-size: 12px; font-weight: 700; display: flex; gap: 0.5rem; align-items: center; animation: slideDown 0.5s ease; }
+.geo-toast .icon { width: 14px; height: 14px; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Home feed banner */
+.feed-banner {
+  background: linear-gradient(120deg, #1a1a1a, #2a2a2a 60%);
+  border: 1px solid rgba(68,214,44,0.4);
+  padding: 1rem; border-radius: 16px; margin-bottom: 0.85rem; position: relative; overflow: hidden;
+}
+.feed-banner::before { content: ''; position: absolute; right: -30px; top: -30px; width: 120px; height: 120px; background: radial-gradient(circle, var(--lsc-green-glow), transparent); }
+
+/* QR card */
+.qr-card {
+  background: linear-gradient(135deg, #1a2a1a, #0a0a0a);
+  border: 1px solid var(--lsc-green); border-radius: 18px; padding: 1.2rem;
+  position: relative; overflow: hidden;
+}
+.qr-frame {
+  background: white; padding: 12px; border-radius: 12px; margin: 1rem auto; width: fit-content;
+}
+.qr-svg { display: block; width: 160px; height: 160px; }
+.wallet-row { display: flex; gap: 0.5rem; margin-top: 1rem; }
+.wallet-btn { flex: 1; padding: 0.7rem; border-radius: 10px; background: black; color: white; text-align: center; font-size: 0.75rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.15); }
+
+/* Booking step */
+.step-bar { display: flex; gap: 4px; margin-bottom: 1rem; }
+.step-bar .seg { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.1); }
+.step-bar .seg.done { background: var(--lsc-green); }
+
+/* Family switcher */
+.fam-row { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.5rem; }
+.fam-row .pill { flex-shrink: 0; padding: 0.5rem 0.85rem; border-radius: 999px; background: rgba(255,255,255,0.06); display: flex; gap: 0.4rem; align-items: center; border: 1.5px solid transparent; font-size: 12px; font-weight: 600; }
+.fam-row .pill.active { border-color: var(--lsc-green); background: rgba(68,214,44,0.15); color: var(--lsc-green); }
+.fam-row .pill .av { width: 24px; height: 24px; border-radius: 50%; background: rgba(255,255,255,0.1); color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; }
+.fam-row .pill.active .av { background: var(--lsc-green); color: black; }
+
+/* Progress dashboard */
+.streak {
+  background: linear-gradient(135deg, #ff6b35, #ff3b30);
+  padding: 1rem; border-radius: 14px; color: white; margin-bottom: 0.7rem;
+}
+.streak .big { font-family: var(--font-display); font-size: 2.5rem; font-weight: 900; line-height: 1; }
+.badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 0.5rem; }
+.badge {
+  aspect-ratio: 1; border-radius: 12px; background: var(--lsc-dark-2);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-weight: 900; font-size: 1rem; color: var(--lsc-green);
+}
+.badge.locked { opacity: 0.25; color: var(--lsc-gray); }
+
+/* Coach DM */
+.bubble { padding: 0.7rem 1rem; border-radius: 18px; margin-bottom: 0.5rem; max-width: 75%; font-size: 13px; line-height: 1.4; }
+.bubble.them { background: var(--lsc-dark-2); color: white; border-bottom-left-radius: 4px; }
+.bubble.me { background: var(--lsc-green); color: var(--lsc-black); margin-left: auto; border-bottom-right-radius: 4px; }
+.dm-input { position: absolute; bottom: 80px; left: 14px; right: 14px; background: var(--lsc-dark-2); border-radius: 24px; padding: 0.6rem 1rem; display: flex; gap: 0.5rem; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+.dm-input input { flex: 1; background: transparent; border: none; color: white; font-family: inherit; outline: none; font-size: 13px; }
+
+/* Connected Devices screen */
+.dev-card { display: flex; gap: 0.75rem; align-items: center; padding: 0.85rem; margin-bottom: 0.6rem; background: var(--lsc-dark-2); border: 1px solid rgba(255,255,255,0.05); border-radius: 14px; }
+.dev-card.connected { border-color: rgba(68,214,44,0.4); background: rgba(68,214,44,0.05); }
+.dev-card .dev-ic { width: 40px; height: 40px; border-radius: 10px; background: rgba(255,255,255,0.05); color: white; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 800; font-size: 13px; flex-shrink: 0; }
+.dev-card.connected .dev-ic { background: rgba(68,214,44,0.15); color: var(--lsc-green); }
+.dev-card .dev-body { flex: 1; min-width: 0; }
+.dev-card .dev-name { font-weight: 700; font-size: 13px; color: white; }
+.dev-card .dev-status { font-size: 10px; color: var(--lsc-gray); margin-top: 2px; }
+.dev-card.connected .dev-status { color: var(--lsc-green); }
+.priv-banner { display: flex; gap: 0.6rem; padding: 0.75rem 0.85rem; background: rgba(68,214,44,0.08); border: 1px solid rgba(68,214,44,0.25); border-radius: 12px; font-size: 11px; color: var(--lsc-gray-light); line-height: 1.4; margin-bottom: 0.85rem; }
+.priv-banner .ic-w { color: var(--lsc-green); flex-shrink: 0; margin-top: 2px; }
+.priv-banner strong { color: white; display: block; margin-bottom: 2px; font-size: 12px; }
+
+/* Live Training screen */
+.hr-hero { text-align: center; padding: 1.25rem 0; background: linear-gradient(180deg, rgba(255,59,48,0.18), transparent); border-radius: 18px; margin-bottom: 0.85rem; }
+.hr-hero .lbl { font-size: 10px; color: var(--lsc-gray); letter-spacing: 0.18em; font-weight: 700; }
+.hr-hero .num { font-family: var(--font-display); font-size: 4rem; font-weight: 900; line-height: 1; color: white; margin: 0.3rem 0; letter-spacing: -0.04em; display: inline-flex; align-items: center; gap: 8px; }
+.hr-hero .heart-mini { width: 26px; height: 26px; animation: heartbeat 0.9s ease-in-out infinite; }
+@keyframes heartbeat { 0%,60%,100% { transform: scale(1); } 30% { transform: scale(1.2); } }
+.hr-hero .unit { font-size: 11px; color: var(--lsc-gray-light); letter-spacing: 0.2em; font-weight: 700; display: block; }
+.hr-hero .zone-pill { display: inline-block; margin-top: 0.5rem; padding: 0.3rem 0.85rem; border-radius: 999px; background: var(--lsc-amber); color: black; font-size: 10px; font-weight: 800; letter-spacing: 0.15em; }
+.zone-rows { display: flex; flex-direction: column; gap: 5px; }
+.zone-row { display: flex; align-items: center; gap: 8px; font-size: 10px; }
+.zone-row .lbl { width: 28px; color: var(--lsc-gray); font-weight: 700; }
+.zone-row .bar { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+.zone-row .bar-fill { height: 100%; border-radius: 3px; }
+.zone-row .pct { width: 28px; text-align: right; color: var(--lsc-gray-light); font-weight: 700; }
+.stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.stat-row .st { background: var(--lsc-dark-2); border-radius: 10px; padding: 0.55rem; text-align: center; }
+.stat-row .st .v { font-family: var(--font-display); font-weight: 900; font-size: 1.1rem; color: white; line-height: 1; }
+.stat-row .st .l { font-size: 9px; color: var(--lsc-gray); letter-spacing: 0.1em; margin-top: 4px; font-weight: 700; }
+.share-card { background: linear-gradient(120deg, rgba(20,20,20,0.95), rgba(10,30,10,0.7)); border: 1px solid rgba(68,214,44,0.4); border-radius: 12px; padding: 0.85rem; margin-top: 0.85rem; }
+.share-card .row { display: flex; justify-content: space-between; align-items: center; }
+.share-card .meta { font-size: 10px; color: var(--lsc-gray); margin-top: 6px; }
+
+/* Toggle switch */
+.toggle { width: 42px; height: 24px; background: var(--lsc-green); border-radius: 999px; padding: 2px; flex-shrink: 0; }
+.toggle .knob { width: 20px; height: 20px; background: white; border-radius: 50%; margin-left: 18px; }
+.toggle.off { background: rgba(255,255,255,0.15); }
+.toggle.off .knob { margin-left: 0; }
+
+/* Notch overlay */
+.notch { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); width: 120px; height: 32px; background: black; border-radius: 999px; z-index: 5; }
+.phone-frame::before { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ========== NAVBAR ========== -->
+<nav class="navbar">
+  <a class="navbar-logo" href="index.html">
+    <img src="assets/logo.png" alt="LSC" />
+  </a>
+  <div class="navbar-links">
+        <a href="programs.html" data-i18n="programs">Programs</a>
+    <a href="events.html" data-i18n="events">Events</a>
+    <a href="facilities.html" data-i18n="facilities">Facilities</a>
+    <a href="membership.html" data-i18n="membership">Membership</a>
+    <a href="app.html" class="active" data-i18n="mobileApp">Mobile App</a>
+  </div>
+  <div class="navbar-actions">
+    <button class="chip lang-toggle" onclick="toggleLang()">عربي</button>
+    <a class="btn btn-primary" href="membership.html" data-i18n="join">Become a Member</a>
+  </div>
+</nav>
+
+<!-- ========== APP STAGE ========== -->
+<section class="app-stage">
+
+  <!-- Left side: info + screen picker -->
+  <div class="app-info">
+    <span class="eyebrow">iOS &amp; Android · React Native</span>
+    <h1 class="display">The LSC app, in your pocket.</h1>
+    <p>Tap any screen on the right or use this list to walk through the full member experience. Every screen is built mobile-first and ships to App Store + Google Play from a single codebase.</p>
+
+    <div class="screen-list" id="screenList"></div>
+
+    <div style="margin-top:1.5rem;display:flex;gap:0.5rem;">
+      <a class="btn btn-ghost" style="font-size:0.8rem;" href="#" onclick="toast('App Store coming soon');return false;">App Store</a>
+      <a class="btn btn-ghost" style="font-size:0.8rem;" href="#" onclick="toast('Google Play coming soon');return false;">Google Play</a>
+    </div>
+  </div>
+
+  <!-- Right side: phone -->
+  <div class="phone-stage">
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="notch"></div>
+
+        <!-- ========== SCREEN: SPLASH ========== -->
+        <div class="m-screen active" id="m-splash">
+          <div class="m-splash">
+            <img src="assets/logo.png" alt="LSC" />
+            <p style="color:var(--lsc-gray);font-size:11px;margin-top:0.5rem;letter-spacing:0.2em;">CLUB · NEW CAIRO</p>
+          </div>
+          <div class="geo-toast"><span class="icon icon-pin"></span> Welcome back, Ahmed. Auto-checking you in…</div>
+        </div>
+
+        <!-- ========== SCREEN: HOME FEED ========== -->
+        <div class="m-screen" id="m-home">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-row">
+              <div>
+                <div style="font-size:11px;color:var(--lsc-gray);">Hello,</div>
+                <div style="font-weight:700;font-size:18px;">Ahmed</div>
+              </div>
+              <div style="display:flex;gap:0.4rem;">
+                <div class="m-tile" style="padding:0.4rem 0.7rem;font-size:11px;">P · <strong>67%</strong></div>
+                <div class="m-tile" style="padding:0.4rem 0.7rem;font-size:11px;display:flex;gap:4px;align-items:center;"><span class="icon icon-bell" style="font-size:12px;"></span>3</div>
+              </div>
+            </div>
+
+            <div class="feed-banner" style="margin-top:1rem;">
+              <div class="m-eyebrow" style="color:var(--lsc-green);">Featured Event</div>
+              <div style="font-weight:800;font-size:15px;margin:0.3rem 0;">STEM Robotics Workshop</div>
+              <div style="font-size:11px;color:var(--lsc-gray-light);">May 23–24 · 8 spots left · EGP 3,100</div>
+              <button class="btn btn-primary" style="margin-top:0.6rem;font-size:11px;padding:0.5rem 1rem;" onclick="showMobileScreen('event')">View event</button>
+            </div>
+
+            <div class="m-h2">Today's bookings</div>
+            <div class="m-card">
+              <div class="m-row">
+                <div style="display:flex;gap:0.7rem;align-items:center;">
+                  <div class="sport-badge sm" style="background:rgba(255,217,61,0.15);color:#FFD93D;">T</div>
+                  <div>
+                    <div style="font-weight:700;font-size:13px;">Tennis · Court 3</div>
+                    <div style="font-size:11px;color:var(--lsc-gray);">6:00 PM · Coach Nadia</div>
+                  </div>
+                </div>
+                <span class="cap cap-ok" style="font-size:9px;">In 2hr</span>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-row">
+                <div style="display:flex;gap:0.7rem;align-items:center;">
+                  <div class="sport-badge sm" style="background:rgba(68,214,44,0.15);color:var(--lsc-green);">F</div>
+                  <div>
+                    <div style="font-weight:700;font-size:13px;">Hamza's Football</div>
+                    <div style="font-size:11px;color:var(--lsc-gray);">Sun 4:00 PM · Coach Karim</div>
+                  </div>
+                </div>
+                <span class="cap cap-ok" style="font-size:9px;">2 days</span>
+              </div>
+            </div>
+
+            <div class="m-h2">Quick book</div>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;">
+              <div class="m-tile" style="text-align:center;padding:0.85rem 0.4rem;font-size:11px;"><div class="sport-badge sm" style="background:rgba(255,217,61,0.15);color:#FFD93D;margin:0 auto 0.3rem;">T</div>Tennis</div>
+              <div class="m-tile" style="text-align:center;padding:0.85rem 0.4rem;font-size:11px;"><div class="sport-badge sm" style="background:rgba(79,195,247,0.15);color:#4FC3F7;margin:0 auto 0.3rem;">S</div>Swim</div>
+              <div class="m-tile" style="text-align:center;padding:0.85rem 0.4rem;font-size:11px;"><div class="sport-badge sm" style="background:rgba(239,83,80,0.15);color:#EF5350;margin:0 auto 0.3rem;">G</div>Gym</div>
+              <div class="m-tile" style="text-align:center;padding:0.85rem 0.4rem;font-size:11px;"><div class="sport-badge sm" style="background:rgba(38,198,218,0.15);color:#26C6DA;margin:0 auto 0.3rem;">P</div>Padel</div>
+            </div>
+
+            <div class="m-h2">Latest news</div>
+            <div class="m-card">
+              <div style="font-weight:700;font-size:12px;">LSC named "Best New Sports Club 2026"</div>
+              <div style="font-size:10px;color:var(--lsc-gray);margin-top:0.2rem;">2 days ago</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: SPORTS LIST ========== -->
+        <div class="m-screen" id="m-sports">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-h1">Sports &amp; Programs</div>
+            <p style="color:var(--lsc-gray);font-size:12px;margin:0 0 1rem;">20+ programs · filter to find yours</p>
+            <div style="display:flex;gap:0.4rem;overflow-x:auto;padding-bottom:0.7rem;">
+              <span class="chip active" style="font-size:10px;">All</span>
+              <span class="chip" style="font-size:10px;">Team</span>
+              <span class="chip" style="font-size:10px;">Racket</span>
+              <span class="chip" style="font-size:10px;">Aquatic</span>
+              <span class="chip" style="font-size:10px;">Fitness</span>
+              <span class="chip" style="font-size:10px;">Martial</span>
+            </div>
+            <div id="m-sports-list"></div>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: BOOKING FLOW ========== -->
+        <div class="m-screen" id="m-booking">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="step-bar"><div class="seg done"></div><div class="seg done"></div><div class="seg"></div></div>
+            <div class="m-eyebrow">Step 2 of 3 · Pick a slot</div>
+            <div class="m-h1">Tennis · Court 3</div>
+            <p style="color:var(--lsc-gray);font-size:12px;">With Coach Nadia · 60 min</p>
+
+            <div class="m-h2">Select date</div>
+            <div style="display:flex;gap:0.4rem;overflow-x:auto;">
+              <div class="m-tile" style="text-align:center;min-width:50px;padding:0.5rem;font-size:11px;background:var(--lsc-green);color:black;font-weight:700;">Mon<br/><strong>29</strong></div>
+              <div class="m-tile" style="text-align:center;min-width:50px;padding:0.5rem;font-size:11px;">Tue<br/><strong>30</strong></div>
+              <div class="m-tile" style="text-align:center;min-width:50px;padding:0.5rem;font-size:11px;">Wed<br/><strong>1</strong></div>
+              <div class="m-tile" style="text-align:center;min-width:50px;padding:0.5rem;font-size:11px;">Thu<br/><strong>2</strong></div>
+              <div class="m-tile" style="text-align:center;min-width:50px;padding:0.5rem;font-size:11px;">Fri<br/><strong>3</strong></div>
+            </div>
+
+            <div class="m-h2">Available times</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.4rem;">
+              <button class="chip" style="padding:0.6rem;">9:00 AM</button>
+              <button class="chip" style="padding:0.6rem;">10:00 AM</button>
+              <button class="chip" style="padding:0.6rem;opacity:0.4;text-decoration:line-through;">11:00 AM</button>
+              <button class="chip active" style="padding:0.6rem;">6:00 PM</button>
+              <button class="chip" style="padding:0.6rem;">7:00 PM</button>
+              <button class="chip" style="padding:0.6rem;opacity:0.4;text-decoration:line-through;">8:00 PM</button>
+            </div>
+
+            <div class="m-card" style="margin-top:1.2rem;background:rgba(244,162,97,0.12);border-color:var(--lsc-amber);">
+              <div style="font-weight:700;font-size:13px;color:var(--lsc-amber);">Class is full at 11 AM</div>
+              <div style="font-size:11px;color:var(--lsc-gray-light);margin-top:0.3rem;">Join the waitlist — you'll be #2. We'll ping you instantly if a spot opens.</div>
+              <button class="btn btn-ghost" style="margin-top:0.5rem;font-size:11px;padding:0.4rem 0.8rem;">Join waitlist</button>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;margin-top:1rem;" onclick="toast('Booking confirmed');">Confirm 6:00 PM booking</button>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: EVENT (STEM, story-style) ========== -->
+        <div class="m-screen" id="m-event">
+          <div style="position:relative;">
+            <div style="height:200px;background:linear-gradient(135deg,#1a1a1a,#0a0a0a);position:relative;display:flex;align-items:center;justify-content:center;">
+              <div style="display:flex;flex-direction:column;gap:6px;align-items:center;padding:14px 10px;background:#0a0a0a;border:3px solid #2a2a2a;border-radius:12px;">
+                <div style="width:36px;height:36px;border-radius:50%;background:#ff3b30;box-shadow:0 0 20px #ff3b30;"></div>
+                <div style="width:36px;height:36px;border-radius:50%;background:#1a1a1a;border:1.5px solid #2a2a2a;"></div>
+                <div style="width:36px;height:36px;border-radius:50%;background:#1a1a1a;border:1.5px solid #2a2a2a;"></div>
+              </div>
+              <div style="position:absolute;top:1rem;left:1rem;right:1rem;display:flex;gap:0.3rem;">
+                <div style="height:3px;flex:1;background:var(--lsc-green);border-radius:2px;"></div>
+                <div style="height:3px;flex:1;background:rgba(255,255,255,0.3);border-radius:2px;"></div>
+                <div style="height:3px;flex:1;background:rgba(255,255,255,0.3);border-radius:2px;"></div>
+                <div style="height:3px;flex:1;background:rgba(255,255,255,0.3);border-radius:2px;"></div>
+              </div>
+            </div>
+            <div class="m-pad" style="padding-top:1rem;">
+              <span class="cap cap-low" style="font-size:9px;">8 / 12 spots left</span>
+              <div class="m-h1" style="margin-top:0.5rem;">STEM Robotics</div>
+              <p style="color:var(--lsc-gray-light);font-size:13px;margin:0;line-height:1.5;">Build a smart traffic light with Arduino. Hands-on coding &amp; electronics for ages 7–16.</p>
+
+              <div style="display:flex;gap:0.5rem;margin:1rem 0;">
+                <div class="m-tile" style="flex:1;text-align:center;padding:0.7rem;">
+                  <div style="font-size:10px;color:var(--lsc-gray);">DATE</div>
+                  <div style="font-weight:700;font-size:12px;margin-top:0.2rem;">May 23–24</div>
+                </div>
+                <div class="m-tile" style="flex:1;text-align:center;padding:0.7rem;">
+                  <div style="font-size:10px;color:var(--lsc-gray);">DURATION</div>
+                  <div style="font-weight:700;font-size:12px;margin-top:0.2rem;">2 days</div>
+                </div>
+                <div class="m-tile" style="flex:1;text-align:center;padding:0.7rem;">
+                  <div style="font-size:10px;color:var(--lsc-gray);">PRICE</div>
+                  <div style="font-weight:700;font-size:12px;margin-top:0.2rem;color:var(--lsc-green);">EGP 3,100</div>
+                </div>
+              </div>
+
+              <div class="m-h2">What you'll learn</div>
+              <div class="m-card"><div style="font-weight:700;font-size:12px;">Day 1</div><div style="font-size:11px;color:var(--lsc-gray-light);margin-top:0.3rem;">Arduino, circuits, and your first lines of code</div></div>
+              <div class="m-card"><div style="font-weight:700;font-size:12px;">Day 2</div><div style="font-size:11px;color:var(--lsc-gray-light);margin-top:0.3rem;">Build the traffic light + parent demo day</div></div>
+
+              <button class="btn btn-primary" style="width:100%;margin-top:1rem;" onclick="toast('Spot reserved. Check your WhatsApp.');">Reserve your child's spot</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: MEMBERSHIP CARD (QR + WALLET) ========== -->
+        <div class="m-screen" id="m-card">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-h1">Membership Card</div>
+            <p style="color:var(--lsc-gray);font-size:12px;margin:0 0 1rem;">Scan at the gate · auto check-in</p>
+
+            <div class="qr-card">
+              <div class="m-row">
+                <div>
+                  <div style="font-size:10px;color:var(--lsc-green);letter-spacing:0.2em;">FAMILY · GOLD</div>
+                  <div style="font-weight:800;font-size:18px;margin-top:0.2rem;">Ahmed Sherif</div>
+                  <div style="font-size:11px;color:var(--lsc-gray-light);">LSC-2024-1847 · Member since 2024</div>
+                </div>
+                <img src="assets/logo.png" alt="" style="width:36px;opacity:0.85;" />
+              </div>
+
+              <div class="qr-frame">
+                <svg class="qr-svg" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+                  <rect width="21" height="21" fill="white"/>
+                  <g fill="black">
+                    <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="white"/><rect x="2" y="2" width="3" height="3"/>
+                    <rect x="14" y="0" width="7" height="7"/><rect x="15" y="1" width="5" height="5" fill="white"/><rect x="16" y="2" width="3" height="3"/>
+                    <rect x="0" y="14" width="7" height="7"/><rect x="1" y="15" width="5" height="5" fill="white"/><rect x="2" y="16" width="3" height="3"/>
+                    <rect x="8" y="0" width="1" height="1"/><rect x="10" y="0" width="1" height="1"/><rect x="12" y="0" width="1" height="1"/>
+                    <rect x="8" y="2" width="1" height="1"/><rect x="9" y="2" width="2" height="1"/><rect x="12" y="2" width="1" height="1"/>
+                    <rect x="8" y="4" width="2" height="1"/><rect x="11" y="4" width="2" height="1"/>
+                    <rect x="8" y="6" width="1" height="1"/><rect x="10" y="6" width="2" height="1"/><rect x="13" y="6" width="1" height="1"/>
+                    <rect x="0" y="8" width="2" height="1"/><rect x="3" y="8" width="1" height="1"/><rect x="5" y="8" width="2" height="1"/><rect x="8" y="8" width="1" height="2"/><rect x="10" y="8" width="2" height="1"/><rect x="13" y="8" width="1" height="1"/><rect x="15" y="8" width="3" height="1"/><rect x="19" y="8" width="2" height="1"/>
+                    <rect x="0" y="10" width="1" height="1"/><rect x="2" y="10" width="3" height="1"/><rect x="6" y="10" width="1" height="1"/><rect x="9" y="10" width="2" height="1"/><rect x="12" y="10" width="1" height="1"/><rect x="14" y="10" width="2" height="1"/><rect x="17" y="10" width="1" height="1"/><rect x="19" y="10" width="2" height="1"/>
+                    <rect x="0" y="12" width="2" height="1"/><rect x="3" y="12" width="1" height="1"/><rect x="5" y="12" width="2" height="1"/><rect x="8" y="12" width="2" height="1"/><rect x="11" y="12" width="1" height="1"/><rect x="13" y="12" width="3" height="1"/><rect x="17" y="12" width="2" height="1"/><rect x="20" y="12" width="1" height="1"/>
+                    <rect x="8" y="14" width="2" height="1"/><rect x="11" y="14" width="1" height="1"/><rect x="13" y="14" width="1" height="1"/><rect x="15" y="14" width="2" height="1"/><rect x="18" y="14" width="3" height="1"/>
+                    <rect x="8" y="16" width="1" height="1"/><rect x="10" y="16" width="3" height="1"/><rect x="14" y="16" width="1" height="1"/><rect x="16" y="16" width="2" height="1"/><rect x="19" y="16" width="2" height="1"/>
+                    <rect x="8" y="18" width="2" height="1"/><rect x="11" y="18" width="2" height="1"/><rect x="14" y="18" width="1" height="1"/><rect x="16" y="18" width="1" height="1"/><rect x="18" y="18" width="3" height="1"/>
+                    <rect x="8" y="20" width="1" height="1"/><rect x="10" y="20" width="2" height="1"/><rect x="13" y="20" width="2" height="1"/><rect x="16" y="20" width="3" height="1"/><rect x="20" y="20" width="1" height="1"/>
+                  </g>
+                </svg>
+              </div>
+              <div style="text-align:center;font-size:10px;color:var(--lsc-gray-light);">Tap card at the gate or show QR</div>
+
+              <div class="wallet-row">
+                <div class="wallet-btn">Apple Wallet</div>
+                <div class="wallet-btn">Google Pay</div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;margin-top:1rem;" onclick="toast('Checked in. Welcome back, Ahmed.');">Tap to check in</button>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: FAMILY SWITCHER ========== -->
+        <div class="m-screen" id="m-family">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-h1">Family</div>
+            <p style="color:var(--lsc-gray);font-size:12px;margin:0 0 1rem;">Switch profile to manage bookings for any family member</p>
+
+            <div class="fam-row" id="m-fam"></div>
+
+            <div class="m-h2">Hamza's upcoming</div>
+            <div class="m-card">
+              <div class="m-row">
+                <div style="display:flex;gap:0.7rem;align-items:center;">
+                  <div class="sport-badge sm" style="background:rgba(68,214,44,0.15);color:var(--lsc-green);">F</div>
+                  <div>
+                    <div style="font-weight:700;font-size:13px;">Football Training</div>
+                    <div style="font-size:11px;color:var(--lsc-gray);">Sun 4:00 PM · Coach Karim</div>
+                  </div>
+                </div>
+                <button class="chip">Reschedule</button>
+              </div>
+            </div>
+            <div class="m-card">
+              <div class="m-row">
+                <div style="display:flex;gap:0.7rem;align-items:center;">
+                  <div class="sport-badge sm" style="background:rgba(68,214,44,0.15);color:var(--lsc-green);">R</div>
+                  <div>
+                    <div style="font-weight:700;font-size:13px;">STEM Workshop</div>
+                    <div style="font-size:11px;color:var(--lsc-gray);">May 23–24 · 2 days</div>
+                  </div>
+                </div>
+                <span class="cap cap-ok">Booked</span>
+              </div>
+            </div>
+
+            <button class="btn btn-ghost" style="width:100%;margin-top:1rem;">Add family member</button>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: CAFETERIA ========== -->
+        <div class="m-screen" id="m-cafe">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-h1">Cafe · Pre-order</div>
+            <p style="color:var(--lsc-gray);font-size:12px;margin:0 0 1rem;">Order now · pick up at table 12</p>
+
+            <div style="display:flex;gap:0.4rem;overflow-x:auto;padding-bottom:0.7rem;">
+              <span class="chip active" style="font-size:10px;">Smoothies</span>
+              <span class="chip" style="font-size:10px;">Bowls</span>
+              <span class="chip" style="font-size:10px;">Sandwiches</span>
+              <span class="chip" style="font-size:10px;">Coffee</span>
+            </div>
+
+            <div class="m-card"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">Green Power Smoothie</div><div style="font-size:11px;color:var(--lsc-gray);">Spinach, banana, protein</div></div><div style="text-align:right;"><div style="font-weight:700;color:var(--lsc-green);">EGP 95</div><button class="chip" style="margin-top:0.3rem;">Add</button></div></div></div>
+            <div class="m-card"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">Berry Recovery</div><div style="font-size:11px;color:var(--lsc-gray);">Strawberry, oats, almond</div></div><div style="text-align:right;"><div style="font-weight:700;color:var(--lsc-green);">EGP 110</div><button class="chip" style="margin-top:0.3rem;">Add</button></div></div></div>
+            <div class="m-card"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">Tropical Boost</div><div style="font-size:11px;color:var(--lsc-gray);">Mango, coconut, yogurt</div></div><div style="text-align:right;"><div style="font-weight:700;color:var(--lsc-green);">EGP 105</div><button class="chip" style="margin-top:0.3rem;">Add</button></div></div></div>
+
+            <div class="m-card" style="background:rgba(68,214,44,0.08);border-color:var(--lsc-green);">
+              <div class="m-row"><div style="font-weight:700;font-size:13px;">Cart · 2 items</div><div style="font-weight:700;color:var(--lsc-green);">EGP 200</div></div>
+              <button class="btn btn-primary" style="width:100%;margin-top:0.6rem;font-size:12px;padding:0.6rem;">Pay &amp; pick up at Table 12</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: COACH DM ========== -->
+        <div class="m-screen" id="m-dm">
+          <div style="padding:1rem 1rem 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+            <div class="m-row">
+              <div style="display:flex;gap:0.6rem;align-items:center;">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--lsc-green);color:black;display:flex;align-items:center;justify-content:center;font-weight:800;">N</div>
+                <div>
+                  <div style="font-weight:700;font-size:14px;">Coach Nadia</div>
+                  <div style="font-size:10px;color:var(--lsc-green);">Online · Tennis</div>
+                </div>
+              </div>
+              <button class="chip" style="font-size:10px;">Call</button>
+            </div>
+          </div>
+          <div style="padding:1rem;padding-bottom:140px;">
+            <div class="bubble them">Hi Ahmed. Quick reminder — bring your forehand grip racquet tomorrow.</div>
+            <div class="bubble me">Will do. Should I warm up before?</div>
+            <div class="bubble them">10 min on the wall would be perfect. See you at 6.</div>
+            <div class="bubble me">Thanks, Coach.</div>
+            <div class="bubble them">By the way, your serve has improved 30% this month — proud of you.</div>
+          </div>
+          <div class="dm-input">
+            <input placeholder="Message Coach Nadia..." />
+            <span style="color:var(--lsc-green);font-weight:800;">Send</span>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: PROGRESS ========== -->
+        <div class="m-screen" id="m-progress">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-h1">Your Progress</div>
+            <p style="color:var(--lsc-gray);font-size:12px;margin:0 0 1rem;">Tennis · Year 2 with LSC</p>
+
+            <div class="streak">
+              <div style="font-size:11px;letter-spacing:0.15em;text-transform:uppercase;opacity:0.85;">Active streak</div>
+              <div class="big">14 days</div>
+              <div style="font-size:11px;opacity:0.85;">Personal best: 21 days</div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:0.7rem;">
+              <div class="m-tile">
+                <div style="font-size:10px;color:var(--lsc-gray);">SESSIONS THIS MONTH</div>
+                <div style="font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--lsc-green);line-height:1;margin-top:0.3rem;">12</div>
+                <div style="font-size:10px;color:var(--lsc-gray);">+3 vs last month</div>
+              </div>
+              <div class="m-tile">
+                <div style="font-size:10px;color:var(--lsc-gray);">LIFE POINTS</div>
+                <div style="font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--lsc-green);line-height:1;margin-top:0.3rem;">2,450</div>
+                <div style="font-size:10px;color:var(--lsc-gray);">550 to next reward</div>
+              </div>
+            </div>
+
+            <div class="m-h2">Milestones</div>
+            <div class="badges">
+              <div class="badge">L1</div>
+              <div class="badge">L2</div>
+              <div class="badge">L3</div>
+              <div class="badge">L4</div>
+              <div class="badge locked">L5</div>
+              <div class="badge locked">L6</div>
+              <div class="badge locked">L7</div>
+              <div class="badge locked">L8</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: BIRTHDAY PARTY ========== -->
+        <div class="m-screen" id="m-party">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="step-bar"><div class="seg done"></div><div class="seg done"></div><div class="seg done"></div><div class="seg"></div></div>
+            <div class="m-eyebrow">Step 3 of 4 · Add-ons</div>
+            <div class="m-h1">Birthday Party</div>
+            <p style="color:var(--lsc-gray);font-size:12px;">Hamza's 12th · Sat Jun 14, 3–6 PM · Pool Pavilion</p>
+
+            <div class="m-h2">Choose your package</div>
+            <div class="m-card" style="border:2px solid var(--lsc-green);"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">Champion · 15 kids</div><div style="font-size:11px;color:var(--lsc-gray);">Cake + decor + 2 hrs pool + games</div></div><div style="font-weight:700;color:var(--lsc-green);">EGP 6,500</div></div></div>
+            <div class="m-card"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">All-Star · 25 kids</div><div style="font-size:11px;color:var(--lsc-gray);">Everything above + photographer</div></div><div style="font-weight:700;">EGP 9,500</div></div></div>
+
+            <div class="m-h2">Add-ons</div>
+            <div class="m-card"><div class="m-row"><div style="font-weight:700;font-size:13px;">Themed decor</div><span class="chip active">+EGP 800</span></div></div>
+            <div class="m-card"><div class="m-row"><div style="font-weight:700;font-size:13px;">Goodie bags ×15</div><span class="chip">+EGP 1,200</span></div></div>
+            <div class="m-card"><div class="m-row"><div style="font-weight:700;font-size:13px;">Magician 30 min</div><span class="chip">+EGP 1,500</span></div></div>
+
+            <div class="m-card" style="background:rgba(68,214,44,0.08);border-color:var(--lsc-green);">
+              <div class="m-row"><div style="font-weight:700;font-size:13px;">Total</div><div style="font-weight:800;font-size:18px;color:var(--lsc-green);">EGP 7,300</div></div>
+              <button class="btn btn-primary" style="width:100%;margin-top:0.6rem;font-size:12px;" onclick="toast('Party booked');">Continue to checkout</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: CONNECTED DEVICES ========== -->
+        <div class="m-screen" id="m-devices">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-h1">Connected Devices</div>
+            <p style="color:var(--lsc-gray);font-size:12px;margin:0 0 1rem;">Sync your watch or fitness band to stream live workouts.</p>
+
+            <div class="priv-banner">
+              <span class="ic-w icon icon-check" style="width:16px;height:16px;"></span>
+              <div>
+                <strong>Encrypted &amp; member-owned</strong>
+                Health data stays on your device. Per-session sharing only — your coach sees what you choose, when you choose.
+              </div>
+            </div>
+
+            <div class="m-eyebrow" style="margin-bottom:0.4rem;">CONNECTED</div>
+            <div class="dev-card connected">
+              <div class="dev-ic"></div>
+              <div class="dev-body">
+                <div class="dev-name">Apple Watch · Series 9</div>
+                <div class="dev-status">● Live · 142 BPM streaming</div>
+              </div>
+              <button class="chip" style="font-size:10px;">Manage</button>
+            </div>
+
+            <div class="m-eyebrow" style="margin:1rem 0 0.4rem;">AVAILABLE TO PAIR</div>
+            <div class="dev-card">
+              <div class="dev-ic">G</div>
+              <div class="dev-body">
+                <div class="dev-name">Garmin Connect</div>
+                <div class="dev-status">Forerunner · Fenix · Venu</div>
+              </div>
+              <button class="chip" style="font-size:10px;">Pair</button>
+            </div>
+            <div class="dev-card">
+              <div class="dev-ic">S</div>
+              <div class="dev-body">
+                <div class="dev-name">Samsung Health</div>
+                <div class="dev-status">Galaxy Watch · Wear OS</div>
+              </div>
+              <button class="chip" style="font-size:10px;">Pair</button>
+            </div>
+            <div class="dev-card">
+              <div class="dev-ic">F</div>
+              <div class="dev-body">
+                <div class="dev-name">Fitbit</div>
+                <div class="dev-status">Charge · Sense · Versa</div>
+              </div>
+              <button class="chip" style="font-size:10px;">Pair</button>
+            </div>
+            <div class="dev-card">
+              <div class="dev-ic">P</div>
+              <div class="dev-body">
+                <div class="dev-name">Polar &amp; Whoop</div>
+                <div class="dev-status">Heart-rate straps</div>
+              </div>
+              <button class="chip" style="font-size:10px;">Pair</button>
+            </div>
+
+            <button class="btn btn-primary" style="width:100%;margin-top:1rem;" onclick="showMobileScreen('training')">View live training →</button>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: LIVE TRAINING & BIOMETRICS ========== -->
+        <div class="m-screen" id="m-training">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-row">
+              <div>
+                <div class="m-eyebrow">LIVE · TENNIS · COURT 3</div>
+                <div class="m-h1" style="margin-top:0.3rem;">32:18</div>
+              </div>
+              <div style="display:flex;gap:0.4rem;align-items:center;background:rgba(68,214,44,0.15);padding:0.3rem 0.7rem;border-radius:999px;">
+                <span style="width:6px;height:6px;border-radius:50%;background:var(--lsc-green);animation:pulse 1.4s infinite;"></span>
+                <span style="font-size:10px;font-weight:800;color:var(--lsc-green);letter-spacing:0.1em;">LIVE</span>
+              </div>
+            </div>
+
+            <div class="hr-hero" style="margin-top:0.85rem;">
+              <div class="lbl">HEART RATE</div>
+              <div class="num">
+                <svg class="heart-mini" viewBox="0 0 24 24" fill="#ff3b30" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-7-4.5-9.5-9C.7 8 3 4 7 4c2 0 3.5 1 5 3 1.5-2 3-3 5-3 4 0 6.3 4 4.5 8C19 16.5 12 21 12 21z"/></svg>
+                <span>142</span>
+              </div>
+              <span class="unit">BPM</span>
+              <div class="zone-pill">ZONE 4 · THRESHOLD</div>
+            </div>
+
+            <div class="m-eyebrow" style="margin:0.5rem 0;">TIME IN ZONES</div>
+            <div class="zone-rows">
+              <div class="zone-row"><span class="lbl">Z5</span><div class="bar"><div class="bar-fill" style="width:8%;background:#ff3b30;"></div></div><span class="pct">2m</span></div>
+              <div class="zone-row"><span class="lbl">Z4</span><div class="bar"><div class="bar-fill" style="width:42%;background:#ff6b35;"></div></div><span class="pct">14m</span></div>
+              <div class="zone-row"><span class="lbl">Z3</span><div class="bar"><div class="bar-fill" style="width:32%;background:var(--lsc-amber);"></div></div><span class="pct">10m</span></div>
+              <div class="zone-row"><span class="lbl">Z2</span><div class="bar"><div class="bar-fill" style="width:14%;background:var(--lsc-green);"></div></div><span class="pct">5m</span></div>
+              <div class="zone-row"><span class="lbl">Z1</span><div class="bar"><div class="bar-fill" style="width:4%;background:#4FC3F7;"></div></div><span class="pct">1m</span></div>
+            </div>
+
+            <div class="stat-row" style="margin-top:0.85rem;">
+              <div class="st"><div class="v">412</div><div class="l">CAL</div></div>
+              <div class="st"><div class="v">68</div><div class="l">TRIMP</div></div>
+              <div class="st"><div class="v">156</div><div class="l">PEAK</div></div>
+            </div>
+
+            <div class="share-card">
+              <div class="row">
+                <div>
+                  <div style="font-weight:700;font-size:12px;color:white;">Share with Coach Nadia</div>
+                  <div class="meta">For this session only · auto-revoke at end</div>
+                </div>
+                <div class="toggle"><div class="knob"></div></div>
+              </div>
+            </div>
+
+            <div class="m-eyebrow" style="margin:1rem 0 0.4rem;">SESSION TIMELINE</div>
+            <div class="m-card" style="font-size:11px;color:var(--lsc-gray-light);line-height:1.6;">
+              <div>32:00 · Drill — forehand cross-court</div>
+              <div>28:14 · Recovery 2:00</div>
+              <div>22:00 · Sets 4×6 · serve practice</div>
+              <div>00:00 · Warm-up &amp; mobility</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== SCREEN: SETTINGS ========== -->
+        <div class="m-screen" id="m-settings">
+          <div class="m-pad" style="padding-top:1rem;">
+            <div class="m-h1">Settings</div>
+            <div class="m-card"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">Push notifications</div><div style="font-size:11px;color:var(--lsc-gray);">Bookings, events, news</div></div><div class="toggle"><div class="knob"></div></div></div></div>
+
+            <div class="m-card"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">Language</div><div style="font-size:11px;color:var(--lsc-gray);">English · العربية</div></div><div style="display:flex;background:rgba(255,255,255,0.06);border-radius:999px;padding:3px;"><span style="padding:0.3rem 0.7rem;border-radius:999px;background:var(--lsc-green);color:black;font-size:10px;font-weight:700;">EN</span><span style="padding:0.3rem 0.7rem;font-size:10px;font-weight:700;color:var(--lsc-gray);">عربي</span></div></div></div>
+
+            <div class="m-card"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">Auto check-in</div><div style="font-size:11px;color:var(--lsc-gray);">Geofence on arrival</div></div><div class="toggle"><div class="knob"></div></div></div></div>
+
+            <div class="m-card"><div class="m-row"><div><div style="font-weight:700;font-size:13px;">Biometric login</div><div style="font-size:11px;color:var(--lsc-gray);">Face ID / Fingerprint</div></div><div class="toggle"><div class="knob"></div></div></div></div>
+
+            <div class="m-card"><div class="m-row"><div style="font-weight:700;font-size:13px;">Privacy</div><span style="color:var(--lsc-gray);">›</span></div></div>
+            <div class="m-card"><div class="m-row"><div style="font-weight:700;font-size:13px;">Help &amp; Support</div><span style="color:var(--lsc-gray);">›</span></div></div>
+            <div class="m-card"><div class="m-row"><div style="font-weight:700;font-size:13px;color:var(--lsc-red);">Sign out</div><span style="color:var(--lsc-gray);">›</span></div></div>
+          </div>
+        </div>
+
+        <!-- ========== STATUS BAR ========== -->
+        <div class="status-bar">
+          <span>9:41</span>
+          <div class="right">
+            <span>5G</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+        <!-- ========== TAB BAR ========== -->
+        <div class="tab-bar">
+          <button class="m-tab active tab" data-screen="home" onclick="showMobileScreen('home')"><span class="icon icon-home"></span><span class="lbl">Home</span></button>
+          <button class="m-tab tab" data-screen="sports" onclick="showMobileScreen('sports')"><span class="icon icon-grid"></span><span class="lbl">Sports</span></button>
+          <button class="m-tab tab" data-screen="event" onclick="showMobileScreen('event')"><span class="icon icon-bolt"></span><span class="lbl">Events</span></button>
+          <button class="m-tab tab" data-screen="card" onclick="showMobileScreen('card')"><span class="icon icon-card"></span><span class="lbl">Card</span></button>
+          <button class="m-tab tab" data-screen="settings" onclick="showMobileScreen('settings')"><span class="icon icon-cog"></span><span class="lbl">More</span></button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<a class="wa-widget" href="https://wa.me/201000000000" title="WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.5 2.1 7.9L.4 31.6l8-2.1c2.3 1.3 4.9 1.9 7.6 1.9h.1c8.6 0 15.6-6.9 15.6-15.6S24.6.4 16 .4zm0 28.5c-2.4 0-4.7-.7-6.7-1.9l-.5-.3-5 1.3 1.3-4.9-.3-.5c-1.4-2.1-2.1-4.6-2.1-7.1 0-7.3 6-13.3 13.3-13.3 3.6 0 6.9 1.4 9.4 3.9 2.5 2.5 3.9 5.9 3.9 9.4 0 7.4-6 13.4-13.3 13.4zm7.3-10c-.4-.2-2.4-1.2-2.7-1.3-.4-.1-.6-.2-.9.2-.3.4-1 1.3-1.2 1.5-.2.2-.4.3-.8.1-.4-.2-1.7-.6-3.2-2-1.2-1.1-2-2.4-2.2-2.8-.2-.4 0-.6.2-.8.2-.2.4-.5.6-.7.2-.2.3-.4.4-.7.1-.3.1-.5 0-.7-.1-.2-.9-2.1-1.2-2.9-.3-.8-.6-.7-.9-.7h-.7c-.2 0-.6.1-1 .5s-1.3 1.3-1.3 3.2 1.3 3.7 1.5 3.9c.2.3 2.6 4 6.4 5.7 1 .4 1.7.7 2.3.9.7.2 1.4.2 1.9.1.6-.1 2-.8 2.3-1.6.3-.8.3-1.4.2-1.6 0-.2-.3-.3-.7-.5z"/></svg>
+</a>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+<script>
+const screens = [
+  { id: 'splash',   label: 'Splash + Geofence' },
+  { id: 'home',     label: 'Home Feed (parking, STEM)' },
+  { id: 'sports',   label: 'Sports List' },
+  { id: 'booking',  label: 'Booking Flow + Waitlist' },
+  { id: 'event',    label: 'Event Detail (STEM)' },
+  { id: 'card',     label: 'Membership Card + Wallet' },
+  { id: 'devices',  label: 'Connected Devices (Watch)' },
+  { id: 'training', label: 'Live Training + Biometrics' },
+  { id: 'family',   label: 'Family Switcher' },
+  { id: 'cafe',     label: 'Cafeteria Pre-order' },
+  { id: 'dm',       label: 'Coach DM' },
+  { id: 'progress', label: 'Progress Dashboard' },
+  { id: 'party',    label: 'Birthday Party Wizard' },
+  { id: 'settings', label: 'Settings (EN/AR)' },
+];
+document.getElementById('screenList').innerHTML = screens.map((s, i) => `
+  <div class="item ${i===0?'active':''}" data-screen="${s.id}" onclick="showMobileScreen('${s.id}')">
+    <span class="num">${String(i+1).padStart(2,'0')}</span>
+    <span>${s.label}</span>
+  </div>`).join('');
+
+(function(){
+  const list = document.getElementById('m-sports-list');
+  list.innerHTML = window.LSC.sports.slice(0, 8).map(s => `
+    <div class="m-card" style="display:flex;gap:0.7rem;align-items:center;">
+      <div class="sport-badge sm" style="background:${s.color}25;color:${s.color};flex-shrink:0;">${s.initial}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:13px;">${s.name}</div>
+        <div style="font-size:11px;color:var(--lsc-gray);">${s.coach} · Ages ${s.ages}</div>
+      </div>
+      <div style="text-align:right;">
+        ${s.spots === 0 ? '<span class="cap cap-full" style="font-size:9px;">Full</span>' : s.spots <= 5 ? `<span class="cap cap-low" style="font-size:9px;">${s.spots} left</span>` : `<span class="cap cap-ok" style="font-size:9px;">Open</span>`}
+      </div>
+    </div>`).join('');
+})();
+
+(function(){
+  const fam = document.getElementById('m-fam');
+  fam.innerHTML = window.LSC.loggedInMember.family.map((m, i) => `
+    <div class="pill ${i===2?'active':''}">
+      <span class="av">${m.avatar}</span>
+      <span>${m.name}</span>
+    </div>`).join('');
+})();
+
+setTimeout(() => {
+  if (document.getElementById('m-splash').classList.contains('active')) {
+    showMobileScreen('home');
+  }
+}, 2800);
+</script>
+</body>
+</html>

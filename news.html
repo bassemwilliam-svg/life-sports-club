@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>News &amp; Stories · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.news-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 900px) { .news-grid { grid-template-columns: 1fr; } }
+.news-card { padding: 0; overflow: hidden; cursor: pointer; }
+.news-card .img {
+  aspect-ratio: 1.5; display: flex; align-items: end; padding: 1rem;
+  font-family: var(--font-display); font-weight: 800; font-size: 0.7rem; letter-spacing: 0.18em; color: white;
+}
+.news-card.k-award .img { background: linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85) 100%),url('assets/news-award.jpg') center/cover; }
+.news-card.k-padel .img { background: linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85) 100%),url('assets/facility-tennis.jpg') center/cover; }
+.news-card.k-football .img { background: linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85) 100%),url('assets/sport-football.jpg') center/cover; }
+.news-card.k-pool .img { background: linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85) 100%),url('assets/facility-pool.jpg') center/cover; }
+.news-card .body { padding: 1.5rem; }
+.news-card h3 { font-family: var(--font-display); font-size: 1.4rem; margin: 0 0 0.5rem; line-height: 1.1; }
+.news-card .meta { font-size: 0.78rem; color: var(--lsc-gray); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.7rem; }
+.news-card p { color: var(--lsc-gray-light); font-size: 0.92rem; margin: 0 0 1rem; line-height: 1.5; }
+
+.feature-news {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border-radius: var(--radius-xl); overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06); margin-bottom: 3rem;
+  background: var(--lsc-dark-2);
+}
+@media (max-width: 900px) { .feature-news { grid-template-columns: 1fr; } }
+.feature-news .img-side {
+  background: linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.7) 100%),url('assets/news-award.jpg') center/cover;
+  min-height: 380px; display: flex; align-items: end; padding: 2rem; color: white;
+  font-family: var(--font-display); font-size: 5rem; font-weight: 900; line-height: 0.9;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+}
+.feature-news .copy { padding: 3rem; }
+.feature-news .copy h2 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0.7rem 0; line-height: 1.05; }
+
+/* Social grid (Moments) */
+.social-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 0.5rem; margin-top: 2rem; }
+@media (max-width: 800px) { .social-strip { grid-template-columns: repeat(3, 1fr); } }
+.social-strip .post {
+  aspect-ratio: 1; border-radius: 12px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  display: flex; align-items: end; padding: 0.5rem; font-size: 0.7rem; color: white; font-weight: 700;
+}
+.social-strip .post { background-size: cover; background-position: center; }
+.social-strip .post:nth-child(1) { background-image: linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/sport-tennis.jpg'); }
+.social-strip .post:nth-child(2) { background-image: linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/facility-cafe.jpg'); }
+.social-strip .post:nth-child(3) { background-image: linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/sport-swimming.jpg'); }
+.social-strip .post:nth-child(4) { background-image: linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/sport-football.jpg'); }
+.social-strip .post:nth-child(5) { background-image: linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/facility-gym.jpg'); }
+.social-strip .post:nth-child(6) { background-image: linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/stem-cohort-1.jpg'); }
+.social-strip .post .ig {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  font-size: 0.6rem; color: white; opacity: 0.85; letter-spacing: 0.1em;
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-logo" href="index.html"><img src="assets/logo.png" alt="LSC" /></a>
+  <div class="navbar-links">
+        <a href="programs.html" data-i18n="programs">Programs</a>
+    <a href="events.html" data-i18n="events">Events</a>
+    <a href="facilities.html" data-i18n="facilities">Facilities</a>
+    <a href="membership.html" data-i18n="membership">Membership</a>
+    <a href="app.html" data-i18n="mobileApp">Mobile App</a>
+    <a href="news.html" class="active" data-i18n="news">News</a>
+  </div>
+  <div class="navbar-actions">
+    <button class="chip lang-toggle" onclick="toggleLang()">عربي</button>
+    <a class="btn btn-ghost" href="login.html" data-i18n="loginShort">Login</a>
+  </div>
+</nav>
+
+<section class="section" style="padding-top:8rem;">
+  <div class="container">
+    <span class="eyebrow" data-i18n="newsEyebrow">News &amp; Stories</span>
+    <h1 class="display" style="font-size:clamp(2.5rem,5vw,4.5rem);margin:0.5rem 0 1rem;" data-i18n="newsTitle">From the <span class="brand-grad">life of LSC.</span></h1>
+    <p style="color:var(--lsc-gray-light);max-width:640px;font-size:1.05rem;line-height:1.6;margin-bottom:3rem;">Wins, recaps, member spotlights, and what's next. Updated weekly by the LSC content team via the Admin Media Portal.</p>
+
+    <!-- Featured news -->
+    <article class="feature-news">
+      <div class="img-side">04.02</div>
+      <div class="copy">
+        <span class="eyebrow">Award</span>
+        <h2>LSC named "Best New Sports Club 2026" by Egypt Sports Awards.</h2>
+        <p style="color:var(--lsc-gray-light);font-size:1rem;line-height:1.6;">Our 25-acre campus and elite coaching team recognized at the national level. The award puts LSC on the map alongside the country's longest-running clubs — after just 5 years of operation.</p>
+        <div style="display:flex;gap:0.5rem;margin-top:1.5rem;">
+          <a class="btn btn-primary" href="#">Read the full story</a>
+          <button class="btn btn-ghost" onclick="toast('Shared');">Share</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- News grid -->
+    <h2 style="font-family:var(--font-display);font-size:1.6rem;margin:2rem 0 1.25rem;">Latest stories</h2>
+    <div class="news-grid" id="news-grid"></div>
+
+    <!-- Social Moments -->
+    <h2 style="font-family:var(--font-display);font-size:1.6rem;margin:4rem 0 0.5rem;">Moments at LSC</h2>
+    <p style="color:var(--lsc-gray-light);font-size:0.95rem;margin:0 0 1rem;">Live from <strong style="color:var(--lsc-green)">@lifesportsclub</strong> on Instagram.</p>
+    <div class="social-strip">
+      <div class="post"><span class="ig">@lifesportsclub</span>Tennis Open Day</div>
+      <div class="post"><span class="ig">@lifesportsclub</span>Cafe re-opening</div>
+      <div class="post"><span class="ig">@lifesportsclub</span>Pool morning swim</div>
+      <div class="post"><span class="ig">@lifesportsclub</span>U-12 football final</div>
+      <div class="post"><span class="ig">@lifesportsclub</span>Yoga sunset class</div>
+      <div class="post"><span class="ig">@lifesportsclub</span>STEM Cohort 03</div>
+    </div>
+
+    <!-- Newsletter signup -->
+    <div class="card" style="margin-top:4rem;padding:2.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1.5rem;background:linear-gradient(120deg,var(--lsc-dark-2),#1f1f1f);">
+      <div>
+        <h3 style="font-family:var(--font-display);font-size:1.6rem;margin:0 0 0.5rem;">Get LSC stories in your inbox.</h3>
+        <p style="color:var(--lsc-gray-light);margin:0;font-size:0.95rem;">One email per week. Highlights, events, and members' wins.</p>
+      </div>
+      <form style="display:flex;gap:0.5rem;align-items:center;" onsubmit="event.preventDefault();toast('Subscribed');">
+        <input type="email" placeholder="you@example.com" required style="padding:0.85rem 1rem;background:var(--lsc-dark);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);color:white;font-family:inherit;min-width:240px;" />
+        <button class="btn btn-primary" type="submit">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<a class="wa-widget" href="https://wa.me/201000000000" title="WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.5 2.1 7.9L.4 31.6l8-2.1c2.3 1.3 4.9 1.9 7.6 1.9h.1c8.6 0 15.6-6.9 15.6-15.6S24.6.4 16 .4z"/></svg>
+</a>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+<script>
+(function(){
+  const grid = document.getElementById('news-grid');
+  // Skip the first one (it's the feature)
+  const items = window.LSC.news.slice(1);
+  const klass = ['k-padel','k-football','k-pool'];
+  grid.innerHTML = items.map((n, i) => `
+    <article class="card news-card ${klass[i] || 'k-padel'}">
+      <div class="img">${new Date(n.date).toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'}).toUpperCase()}</div>
+      <div class="body">
+        <div class="meta">News</div>
+        <h3>${n.title}</h3>
+        <p>${n.excerpt}</p>
+        <a href="#" style="color:var(--lsc-green);text-decoration:none;font-size:0.85rem;font-weight:700;">Read more →</a>
+      </div>
+    </article>`).join('');
+})();
+</script>
+</body>
+</html>

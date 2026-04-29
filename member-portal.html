@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Member Portal · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.portal-grid { display: grid; grid-template-columns: 280px 1fr; gap: 2rem; padding: 7rem 2rem 4rem; max-width: 1440px; margin: 0 auto; }
+@media (max-width: 1000px) { .portal-grid { grid-template-columns: 1fr; } }
+
+.side-nav { background: var(--lsc-dark-2); border-radius: var(--radius-lg); padding: 1rem; height: fit-content; position: sticky; top: 6rem; }
+.side-nav .me { padding: 1.25rem; border-radius: 14px; background: rgba(68,214,44,0.08); border: 1px solid rgba(68,214,44,0.2); margin-bottom: 1rem; }
+.side-nav .me .av { width: 48px; height: 48px; border-radius: 50%; background: var(--lsc-green); color: black; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.2rem; margin-bottom: 0.6rem; }
+.side-nav .me .name { font-weight: 700; }
+.side-nav .me .tier { font-size: 0.78rem; color: var(--lsc-green); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 0.2rem; }
+.side-nav .item { display: flex; align-items: center; gap: 0.7rem; padding: 0.75rem 0.95rem; border-radius: 10px; color: var(--lsc-gray-light); text-decoration: none; font-size: 0.92rem; cursor: pointer; transition: all 0.15s; }
+.side-nav .item:hover { background: rgba(255,255,255,0.04); color: var(--lsc-white); }
+.side-nav .item.active { background: var(--lsc-green); color: var(--lsc-black); font-weight: 700; }
+.side-nav .item .icon { font-size: 1rem; }
+
+.greet { display: flex; justify-content: space-between; align-items: end; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+.greet h1 { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); margin: 0; }
+
+.tile-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1.25rem; }
+@media (max-width: 1000px) { .tile-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px)  { .tile-grid { grid-template-columns: 1fr; } }
+.tile { padding: 1.5rem; background: var(--lsc-dark-2); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-lg); }
+.tile h3 { font-family: var(--font-display); font-size: 1.2rem; margin: 0 0 1rem; }
+.tile-row { display: flex; justify-content: space-between; align-items: center; padding: 0.7rem 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.tile-row:last-child { border-bottom: none; padding-bottom: 0; }
+.tile-row .meta-l { font-size: 0.78rem; color: var(--lsc-gray); }
+.tile-row .meta-v { font-weight: 700; font-size: 0.95rem; }
+
+/* Loyalty card */
+.loyalty {
+  background: linear-gradient(135deg, var(--lsc-green) 0%, #66E03A 100%);
+  color: var(--lsc-black);
+  position: relative; overflow: hidden;
+}
+.loyalty .bignum { font-family: var(--font-display); font-size: 4rem; font-weight: 900; line-height: 1; }
+.loyalty .ringlbl { font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.85; }
+.loyalty .progress { height: 6px; background: rgba(0,0,0,0.15); border-radius: 999px; margin: 1rem 0 0.5rem; overflow: hidden; }
+.loyalty .progress-fill { height: 100%; background: black; width: 81%; }
+
+/* Membership card mini */
+.member-card-mini {
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #1a2a1a, #0a0a0a);
+  border: 1px solid var(--lsc-green); border-radius: 18px;
+  position: relative; overflow: hidden;
+}
+.member-card-mini::before { content:''; position:absolute; right:-30px; top:-30px; width: 120px; height: 120px; background: radial-gradient(circle, var(--lsc-green-glow), transparent); }
+.member-card-mini .mid { font-size: 0.78rem; color: var(--lsc-green); letter-spacing: 0.2em; }
+.member-card-mini .nm { font-weight: 800; font-size: 1.2rem; margin: 0.3rem 0; }
+.member-card-mini .since { font-size: 0.78rem; color: var(--lsc-gray-light); }
+
+.bookings-table { width: 100%; border-collapse: collapse; }
+.bookings-table th, .bookings-table td { padding: 0.85rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.92rem; }
+.bookings-table th { font-family: var(--font-display); font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lsc-gray); font-weight: 700; }
+.bookings-table td { color: var(--lsc-gray-light); }
+.bookings-table .sport-cell { display: flex; gap: 0.6rem; align-items: center; }
+.bookings-table .actions { display: flex; gap: 0.4rem; justify-content: end; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-logo" href="index.html"><img src="assets/logo.png" alt="LSC" /></a>
+  <div class="navbar-links">
+        <a href="programs.html" data-i18n="programs">Programs</a>
+    <a href="events.html" data-i18n="events">Events</a>
+    <a href="facilities.html" data-i18n="facilities">Facilities</a>
+    <a href="membership.html" data-i18n="membership">Membership</a>
+    <a href="app.html" data-i18n="mobileApp">Mobile App</a>
+    <a href="news.html" data-i18n="news">News</a>
+  </div>
+  <div class="navbar-actions">
+    <button class="chip lang-toggle" onclick="toggleLang()">عربي</button>
+    <a class="btn btn-primary" href="member-portal.html" style="font-size:0.85rem;">Ahmed S.</a>
+  </div>
+</nav>
+
+<div class="portal-grid">
+
+  <!-- Side nav -->
+  <nav class="side-nav">
+    <div class="me">
+      <div class="av">A</div>
+      <div class="name">Ahmed Sherif</div>
+      <div class="tier">Family · Gold</div>
+    </div>
+    <a class="item active" href="#dashboard" onclick="navTo(this,'dashboard');return false;"><span class="icon icon-home"></span>Dashboard</a>
+    <a class="item" href="#bookings" onclick="navTo(this,'bookings');return false;"><span class="icon icon-calendar"></span>My Bookings</a>
+    <a class="item" href="#family" onclick="navTo(this,'family');return false;"><span class="icon icon-user"></span>Family</a>
+    <a class="item" href="#card" onclick="navTo(this,'card');return false;"><span class="icon icon-card"></span>Membership Card</a>
+    <a class="item" href="#loyalty" onclick="navTo(this,'loyalty');return false;"><span class="icon icon-spark"></span>Life Points</a>
+    <a class="item" href="app.html#dm" onclick="toast('Opening Coach DMs in mobile app preview…');setTimeout(()=>window.location.href='app.html',900);return false;"><span class="icon icon-chat"></span>Coach DMs</a>
+    <a class="item" href="app.html#settings" onclick="toast('Opening Settings in mobile app preview…');setTimeout(()=>window.location.href='app.html',900);return false;"><span class="icon icon-cog"></span>Settings</a>
+    <a class="item" href="login.html" style="margin-top:1rem;color:var(--lsc-red);">Sign out</a>
+  </nav>
+
+  <!-- Main -->
+  <main id="dashboard">
+    <div class="greet">
+      <div>
+        <span class="eyebrow">Member dashboard</span>
+        <h1>Welcome back, Ahmed.</h1>
+        <p style="color:var(--lsc-gray-light);margin:0.4rem 0 0;">3 upcoming bookings this week. Your streak: 14 days.</p>
+      </div>
+      <a class="btn btn-primary" href="programs.html">Book a session</a>
+    </div>
+
+    <!-- Top tiles row -->
+    <div class="tile-grid">
+      <!-- Member card -->
+      <div class="member-card-mini" id="card">
+        <div style="display:flex;justify-content:space-between;align-items:start;">
+          <div>
+            <div class="mid">FAMILY · GOLD</div>
+            <div class="nm">Ahmed Sherif</div>
+            <div class="since">LSC-2024-1847 · Member since 2024</div>
+          </div>
+          <img src="assets/logo.png" alt="" style="width:42px;opacity:0.85;" />
+        </div>
+        <div style="display:flex;gap:0.5rem;margin-top:1.5rem;">
+          <button class="btn btn-primary" style="font-size:0.8rem;padding:0.5rem 0.9rem;background:black;color:white;" onclick="toast('QR opened');">Show QR</button>
+          <button class="btn btn-ghost" style="font-size:0.8rem;padding:0.5rem 0.9rem;" onclick="toast('Renewing in May 2026');">Renews May 2026</button>
+        </div>
+      </div>
+
+      <!-- Loyalty -->
+      <div class="tile loyalty" id="loyalty">
+        <span class="ringlbl">Life Points</span>
+        <div class="bignum">2,450</div>
+        <div class="progress"><div class="progress-fill"></div></div>
+        <div style="font-size:0.78rem;opacity:0.85;">550 to: Free padel session</div>
+      </div>
+
+      <!-- Streak -->
+      <div class="tile" style="background:linear-gradient(135deg,#ff6b35,#ff3b30);color:white;border:none;">
+        <span style="font-size:0.78rem;letter-spacing:0.2em;text-transform:uppercase;opacity:0.85;">Active streak</span>
+        <div style="font-family:var(--font-display);font-size:4rem;font-weight:900;line-height:1;">14<span style="font-size:1.5rem;opacity:0.7;">d</span></div>
+        <div style="font-size:0.85rem;opacity:0.85;margin-top:0.5rem;">Personal best: 21 days</div>
+      </div>
+    </div>
+
+    <!-- Upcoming bookings -->
+    <div class="tile" id="bookings" style="margin-top:1.25rem;scroll-margin-top:6rem;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3>Upcoming bookings</h3>
+        <a href="#" style="color:var(--lsc-green);font-size:0.85rem;text-decoration:none;">View all</a>
+      </div>
+      <table class="bookings-table">
+        <thead><tr><th>Sport</th><th>When</th><th>Coach / Court</th><th></th></tr></thead>
+        <tbody id="bk-rows"></tbody>
+      </table>
+    </div>
+
+    <!-- Family + Recent activity row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:1.25rem;">
+      <div class="tile" id="family" style="scroll-margin-top:6rem;">
+        <h3>Family members</h3>
+        <div id="fam-list"></div>
+      </div>
+      <div class="tile">
+        <h3>Recent activity</h3>
+        <div class="tile-row"><div><div class="meta-v">Booking confirmed</div><div class="meta-l">Tennis Court 3 · Tomorrow</div></div><span style="color:var(--lsc-green);font-size:0.85rem;">+25 pts</span></div>
+        <div class="tile-row"><div><div class="meta-v">Workshop reserved</div><div class="meta-l">STEM · for Hamza</div></div><span style="color:var(--lsc-green);font-size:0.85rem;">+50 pts</span></div>
+        <div class="tile-row"><div><div class="meta-v">Cafe order</div><div class="meta-l">EGP 200 · Pavilion</div></div><span style="color:var(--lsc-gray);font-size:0.85rem;">−</span></div>
+        <div class="tile-row"><div><div class="meta-v">Streak +1</div><div class="meta-l">14 days in a row</div></div><span style="color:var(--lsc-green);font-size:0.85rem;">+10 pts</span></div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<a class="wa-widget" href="https://wa.me/201000000000" title="WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.5 2.1 7.9L.4 31.6l8-2.1c2.3 1.3 4.9 1.9 7.6 1.9h.1c8.6 0 15.6-6.9 15.6-15.6S24.6.4 16 .4z"/></svg>
+</a>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+<script>
+// Bookings
+(function(){
+  const bk = window.LSC.loggedInMember.upcomingBookings;
+  document.getElementById('bk-rows').innerHTML = bk.map(b => {
+    const sport = b.sport.replace(/\s*\(.*?\)/, '');
+    const initial = sport[0];
+    return `
+      <tr>
+        <td><div class="sport-cell"><div class="sport-badge sm" style="background:rgba(68,214,44,0.15);color:var(--lsc-green);">${initial}</div><strong style="color:white;">${b.sport}</strong></div></td>
+        <td>${b.date}</td>
+        <td>${b.coach} · ${b.court}</td>
+        <td><div class="actions"><button class="chip" style="font-size:11px;">Reschedule</button><button class="chip" style="font-size:11px;">Cancel</button></div></td>
+      </tr>`;
+  }).join('');
+})();
+
+// Family
+(function(){
+  const fam = window.LSC.loggedInMember.family;
+  document.getElementById('fam-list').innerHTML = fam.map(m => `
+    <div class="tile-row">
+      <div style="display:flex;gap:0.7rem;align-items:center;">
+        <div class="sport-badge sm" style="background:rgba(68,214,44,0.15);color:var(--lsc-green);">${m.avatar}</div>
+        <div>
+          <div class="meta-v">${m.name}</div>
+          <div class="meta-l">${m.age} yrs</div>
+        </div>
+      </div>
+      <button class="chip" style="font-size:11px;">Switch</button>
+    </div>`).join('');
+})();
+</script>
+</body>
+</html>

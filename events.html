@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Events &amp; Workshops · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.featured-event {
+  display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 0;
+  border-radius: var(--radius-xl); overflow: hidden;
+  background: linear-gradient(135deg, #0e0e0d 0%, #1a1a1a 100%);
+  border: 1px solid rgba(68,214,44,0.4);
+  margin-bottom: 3rem;
+  position: relative;
+}
+@media (max-width: 900px) { .featured-event { grid-template-columns: 1fr; } }
+.featured-event .copy { padding: 3rem; position: relative; z-index: 2; }
+.featured-event h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin: 0.7rem 0 1rem; line-height: 1; }
+.featured-event p { color: var(--lsc-gray-light); margin: 0 0 1.5rem; font-size: 1.05rem; line-height: 1.6; }
+.featured-event .tl-stage-mini {
+  background: linear-gradient(180deg,rgba(10,10,10,0.55),rgba(10,10,10,0.95)),url('assets/stem-hero.jpg') center/cover;
+  display: flex; align-items: center; justify-content: center; padding: 2rem; min-height: 300px;
+  position: relative;
+}
+.featured-event .tl-stage-mini::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 30%, rgba(0,0,0,0.5) 100%);
+}
+.mini-light { width: 60px; padding: 10px 6px; background: #0a0a0a; border: 3px solid #2a2a2a; border-radius: 12px; display: flex; flex-direction: column; gap: 8px; align-items: center; position: relative; z-index: 2; }
+.mini-light > div { width: 38px; height: 38px; border-radius: 50%; }
+.mini-light .r { background: #ff3b30; box-shadow: 0 0 18px #ff3b30; }
+.mini-light .y { background: #ffcc00; box-shadow: 0 0 18px #ffcc00; }
+.mini-light .g { background: var(--lsc-green); box-shadow: 0 0 18px var(--lsc-green); }
+
+.events-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 900px) { .events-grid { grid-template-columns: 1fr; } }
+.event-card { padding: 1.75rem; cursor: pointer; }
+.event-card .date-block {
+  display: inline-block; padding: 0.3rem 0.7rem; border-radius: 999px;
+  background: rgba(68,214,44,0.12); color: var(--lsc-green);
+  font-family: var(--font-display); font-size: 0.7rem; font-weight: 800; letter-spacing: 0.18em;
+}
+.event-card h3 { font-family: var(--font-display); font-size: 1.6rem; margin: 0.85rem 0 0.5rem; line-height: 1.05; }
+.event-card .sub { color: var(--lsc-gray-light); font-size: 0.92rem; margin: 0 0 1rem; line-height: 1.5; }
+.event-card .footer { display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.06); font-size: 0.85rem; color: var(--lsc-gray); }
+
+.cal-strip {
+  display: flex; gap: 0.5rem; overflow-x: auto; padding: 1rem 0 2rem;
+  scrollbar-width: thin;
+}
+.cal-strip .day { flex-shrink: 0; padding: 0.7rem 1rem; border-radius: 14px; background: var(--lsc-dark-2); border: 1px solid rgba(255,255,255,0.05); text-align: center; min-width: 70px; cursor: pointer; transition: all 0.15s; }
+.cal-strip .day:hover { border-color: var(--lsc-green); }
+.cal-strip .day.has-event { border-color: rgba(68,214,44,0.5); }
+.cal-strip .day .d-num { font-family: var(--font-display); font-size: 1.6rem; font-weight: 900; line-height: 1; }
+.cal-strip .day .d-lbl { font-size: 0.65rem; color: var(--lsc-gray); letter-spacing: 0.15em; text-transform: uppercase; margin-top: 0.3rem; }
+.cal-strip .day .d-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lsc-green); margin: 0.4rem auto 0; opacity: 0; }
+.cal-strip .day.has-event .d-dot { opacity: 1; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-logo" href="index.html"><img src="assets/logo.png" alt="LSC" /></a>
+  <div class="navbar-links">
+        <a href="programs.html" data-i18n="programs">Programs</a>
+    <a href="events.html" class="active" data-i18n="events">Events</a>
+    <a href="facilities.html" data-i18n="facilities">Facilities</a>
+    <a href="membership.html" data-i18n="membership">Membership</a>
+    <a href="app.html" data-i18n="mobileApp">Mobile App</a>
+    <a href="news.html" data-i18n="news">News</a>
+  </div>
+  <div class="navbar-actions">
+    <button class="chip lang-toggle" onclick="toggleLang()">عربي</button>
+    <a class="btn btn-ghost" href="login.html" data-i18n="loginShort">Login</a>
+  </div>
+</nav>
+
+<section class="section" style="padding-top:8rem;">
+  <div class="container">
+    <span class="eyebrow" data-i18n="eventsEyebrow">Events &amp; Workshops</span>
+    <h1 class="display" style="font-size:clamp(2.5rem,5vw,4.5rem);margin:0.5rem 0 1rem;" data-i18n="eventsTitle">What's <span class="brand-grad">happening at LSC.</span></h1>
+    <p style="color:var(--lsc-gray-light);max-width:640px;font-size:1.05rem;line-height:1.6;margin-bottom:2rem;">Workshops, tournaments, family days, and seasonal camps. New events drop every week.</p>
+
+    <!-- Calendar strip -->
+    <div class="cal-strip" id="cal-strip"></div>
+
+    <!-- Featured event -->
+    <div class="featured-event">
+      <div class="copy">
+        <span class="badge" style="display:inline-block;padding:0.3rem 0.8rem;border-radius:999px;background:var(--lsc-green);color:black;font-size:0.7rem;font-weight:800;letter-spacing:0.18em;">FEATURED THIS MONTH</span>
+        <h2 class="display">STEM Robotics Workshop</h2>
+        <p>Build a working <strong style="color:var(--lsc-green)">Smart Traffic Light with Arduino</strong>. Hands-on electronics and code for ages 7–16. May 23–24, 2026.</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+          <span class="cap cap-low">8 / 12 spots left</span>
+          <span class="chip">2 days · 2 hrs/day</span>
+          <span class="chip">EGP 3,100 incl. kit</span>
+        </div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <a class="btn btn-primary" href="event-stem.html">View event</a>
+          <a class="btn btn-ghost" href="event-stem.html#register">Reserve a spot</a>
+        </div>
+      </div>
+      <div class="tl-stage-mini">
+        <div class="mini-light" style="z-index:2;position:relative;"><div class="r"></div><div class="y" style="opacity:0.2;"></div><div class="g" style="opacity:0.2;"></div></div>
+      </div>
+    </div>
+
+    <!-- Other events -->
+    <h2 style="font-size:1.4rem;margin:2rem 0 1.25rem;">Coming up</h2>
+    <div class="events-grid" id="events-grid"></div>
+
+    <!-- Past events strip -->
+    <h2 style="font-size:1.4rem;margin:3rem 0 1rem;">Past events</h2>
+    <p style="color:var(--lsc-gray-light);font-size:0.95rem;margin:0 0 1.5rem;">Photos and recaps from previous LSC events.</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;" class="events-past">
+      <div class="card" style="aspect-ratio:1.3;display:flex;align-items:end;padding:1rem;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/sport-tennis.jpg') center/cover;border:1px solid rgba(255,255,255,0.06);"><div><div style="font-size:0.7rem;color:var(--lsc-gray-light);">APR 2026</div><div style="font-weight:700;font-size:0.95rem;margin-top:0.2rem;">Spring Tennis Open</div></div></div>
+      <div class="card" style="aspect-ratio:1.3;display:flex;align-items:end;padding:1rem;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/sport-swimming.jpg') center/cover;border:1px solid rgba(255,255,255,0.06);"><div><div style="font-size:0.7rem;color:var(--lsc-gray-light);">MAR 2026</div><div style="font-weight:700;font-size:0.95rem;margin-top:0.2rem;">Aqua Family Day</div></div></div>
+      <div class="card" style="aspect-ratio:1.3;display:flex;align-items:end;padding:1rem;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/sport-football.jpg') center/cover;border:1px solid rgba(255,255,255,0.06);"><div><div style="font-size:0.7rem;color:var(--lsc-gray-light);">FEB 2026</div><div style="font-weight:700;font-size:0.95rem;margin-top:0.2rem;">U-12 Football League</div></div></div>
+      <div class="card" style="aspect-ratio:1.3;display:flex;align-items:end;padding:1rem;background:linear-gradient(180deg,transparent 30%,rgba(0,0,0,0.85) 100%),url('assets/news-award.jpg') center/cover;border:1px solid rgba(255,255,255,0.06);"><div><div style="font-size:0.7rem;color:var(--lsc-gray-light);">JAN 2026</div><div style="font-weight:700;font-size:0.95rem;margin-top:0.2rem;">Members New Year Gala</div></div></div>
+    </div>
+  </div>
+</section>
+
+<a class="wa-widget" href="https://wa.me/201000000000" title="WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.5 2.1 7.9L.4 31.6l8-2.1c2.3 1.3 4.9 1.9 7.6 1.9h.1c8.6 0 15.6-6.9 15.6-15.6S24.6.4 16 .4z"/></svg>
+</a>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+<script>
+// Calendar strip — next 14 days
+(function(){
+  const eventDates = window.LSC.events.map(e => e.date);
+  const start = new Date('2026-04-29');
+  const days = [];
+  for (let i=0; i<14; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const iso = d.toISOString().slice(0,10);
+    const has = eventDates.some(x => Math.abs(new Date(x) - d) < 1000*60*60*24*3);
+    days.push(`<div class="day ${has?'has-event':''}"><div class="d-num">${d.getDate()}</div><div class="d-lbl">${d.toLocaleDateString('en',{month:'short'})}</div><div class="d-dot"></div></div>`);
+  }
+  document.getElementById('cal-strip').innerHTML = days.join('');
+})();
+
+// Other events grid (skip the featured STEM)
+(function(){
+  const grid = document.getElementById('events-grid');
+  const others = window.LSC.events.filter(e => e.id !== 'stem-traffic-light');
+  grid.innerHTML = others.map(e => {
+    const pct = Math.round(((e.spotsTotal - e.spotsLeft) / e.spotsTotal) * 100);
+    return `
+      <a href="event-stem.html" class="card event-card" style="text-decoration:none;color:inherit;">
+        <span class="date-block">${e.dateLabel.toUpperCase()}</span>
+        <h3>${e.title}</h3>
+        <p class="sub">${e.tagline || e.subtitle}</p>
+        <div style="display:flex;gap:0.4rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+          ${(e.ages||[]).map(a => `<span class="chip" style="font-size:10px;">${a}</span>`).join('')}
+          <span class="chip" style="font-size:10px;">${e.duration || ''}</span>
+        </div>
+        <div class="footer">
+          <span>${e.spotsLeft} / ${e.spotsTotal} spots open</span>
+          <span style="color:var(--lsc-white);font-weight:700;">${e.price}</span>
+        </div>
+      </a>`;
+  }).join('');
+})();
+</script>
+</body>
+</html>

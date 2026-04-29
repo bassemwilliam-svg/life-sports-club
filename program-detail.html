@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Program · Life Sports Club</title>
+<link rel="icon" href="assets/logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+.detail-hero { padding: 6rem 2rem 3rem; }
+.detail-grid { display: grid; grid-template-columns: 1.4fr 0.85fr; gap: 3rem; align-items: start; max-width: 1280px; margin: 0 auto; }
+.sport-hero-banner {
+  height: 360px; max-width: 1280px; margin: 0 auto 2rem;
+  border-radius: var(--radius-xl); overflow: hidden;
+  background-size: cover; background-position: center;
+  position: relative;
+}
+.sport-hero-banner::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(14,14,13,0.95) 100%);
+}
+@media (max-width: 800px) { .sport-hero-banner { height: 220px; } }
+@media (max-width: 1000px) { .detail-grid { grid-template-columns: 1fr; } }
+
+.schedule-table { width: 100%; border-collapse: collapse; }
+.schedule-table th, .schedule-table td { padding: 1rem; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 0.92rem; }
+.schedule-table th { font-family: var(--font-display); font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--lsc-gray); font-weight: 700; }
+.schedule-table td { color: var(--lsc-gray-light); }
+.schedule-table tr:hover td { color: var(--lsc-white); background: rgba(255,255,255,0.02); }
+
+.coach-card { padding: 1.5rem; display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; }
+.coach-card .av { width: 64px; height: 64px; border-radius: 16px; background: linear-gradient(135deg,var(--lsc-green),var(--lsc-green-dark)); color: black; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 900; font-size: 1.6rem; flex-shrink: 0; }
+
+.calc-card { padding: 1.5rem; }
+.calc-row { display: flex; justify-content: space-between; padding: 0.5rem 0; color: var(--lsc-gray-light); font-size: 0.92rem; }
+.calc-row.bundle-total { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 1rem; margin-top: 0.5rem; color: var(--lsc-white); font-weight: 700; font-size: 1.1rem; }
+.calc-card label { display: block; font-size: 0.75rem; color: var(--lsc-gray); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+.calc-card input[type=range] { width: 100%; accent-color: var(--lsc-green); }
+.calc-card .stepper { display: flex; gap: 0.5rem; align-items: center; }
+.calc-card .stepper button { width: 36px; height: 36px; border-radius: 10px; background: var(--lsc-dark-2); border: 1px solid rgba(255,255,255,0.08); color: white; font-weight: 700; cursor: pointer; }
+.calc-card .stepper input { flex: 1; background: var(--lsc-dark); border: 1px solid rgba(255,255,255,0.08); color: white; text-align: center; padding: 0.5rem; border-radius: 10px; font-family: inherit; font-weight: 700; }
+
+.book-card { padding: 1.75rem; position: sticky; top: 6rem; }
+.book-card .price { font-family: var(--font-display); font-size: 3rem; color: var(--lsc-green); line-height: 1; }
+.book-card .price-period { font-size: 0.9rem; color: var(--lsc-gray); }
+
+.facts { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin: 1.5rem 0; }
+.facts .fact { padding: 0.85rem; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; }
+.facts .fact .l { font-size: 0.7rem; color: var(--lsc-gray); letter-spacing: 0.1em; text-transform: uppercase; }
+.facts .fact .v { font-weight: 700; margin-top: 0.2rem; font-size: 0.95rem; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="navbar-logo" href="index.html"><img src="assets/logo.png" alt="LSC" /></a>
+  <div class="navbar-links">
+        <a href="programs.html" class="active" data-i18n="programs">Programs</a>
+    <a href="events.html" data-i18n="events">Events</a>
+    <a href="facilities.html" data-i18n="facilities">Facilities</a>
+    <a href="membership.html" data-i18n="membership">Membership</a>
+    <a href="app.html" data-i18n="mobileApp">Mobile App</a>
+    <a href="news.html" data-i18n="news">News</a>
+  </div>
+  <div class="navbar-actions">
+    <button class="chip lang-toggle" onclick="toggleLang()">عربي</button>
+    <a class="btn btn-ghost" href="login.html" data-i18n="loginShort">Login</a>
+  </div>
+</nav>
+
+<section class="detail-hero">
+  <!-- Sport hero photo banner (only shows if image exists for this sport) -->
+  <div id="sport-hero-banner" class="sport-hero-banner" style="display:none;"></div>
+
+  <div class="detail-grid">
+    <div>
+      <a href="programs.html" style="color:var(--lsc-gray-light);text-decoration:none;font-size:0.85rem;" data-i18n="programs">All programs</a>
+      <div style="display:flex;gap:1rem;align-items:center;margin-top:1rem;">
+        <div class="sport-badge lg" id="sport-icon">T</div>
+        <div>
+          <span class="eyebrow" id="sport-cat">Racket</span>
+          <h1 class="display" id="sport-name" style="font-size:clamp(2.5rem,5vw,4rem);margin:0.3rem 0 0;">Tennis</h1>
+        </div>
+      </div>
+
+      <div class="facts">
+        <div class="fact"><div class="l">Coach</div><div class="v" id="f-coach">Coach Nadia</div></div>
+        <div class="fact"><div class="l">Ages</div><div class="v" id="f-ages">6+</div></div>
+        <div class="fact"><div class="l">Schedule</div><div class="v" id="f-schedule">Daily</div></div>
+        <div class="fact"><div class="l">Capacity</div><div class="v" id="f-cap"></div></div>
+      </div>
+
+      <h2 style="font-size:1.4rem;margin:2rem 0 1rem;">About this program</h2>
+      <p style="color:var(--lsc-gray-light);line-height:1.7;">Train on championship-grade clay and hard courts under the guidance of internationally certified coaches. The program runs in age-graded groups so technique is taught at the right level — from first racquet contact through tournament prep.</p>
+
+      <h2 style="font-size:1.4rem;margin:2rem 0 1rem;">This week's schedule</h2>
+      <div class="card">
+        <table class="schedule-table">
+          <thead><tr><th>Day</th><th>Time</th><th>Group</th><th>Coach</th><th>Spots</th></tr></thead>
+          <tbody>
+            <tr><td>Mon</td><td>4:00 – 5:00 PM</td><td>Juniors 6–9</td><td id="t-coach1">Coach Nadia</td><td><span class="cap cap-low">2 left</span></td></tr>
+            <tr><td>Tue</td><td>5:00 – 6:30 PM</td><td>Teens 10–14</td><td id="t-coach2">Coach Nadia</td><td><span class="cap cap-ok">5 open</span></td></tr>
+            <tr><td>Wed</td><td>6:00 – 7:30 PM</td><td>Adults · open</td><td id="t-coach3">Coach Nadia</td><td><span class="cap cap-ok">8 open</span></td></tr>
+            <tr><td>Thu</td><td>4:00 – 5:00 PM</td><td>Juniors 6–9</td><td id="t-coach4">Coach Nadia</td><td><span class="cap cap-full">Full</span></td></tr>
+            <tr><td>Sat</td><td>9:00 – 11:00 AM</td><td>Tournament squad</td><td id="t-coach5">Coach Nadia</td><td><span class="cap cap-low">3 left</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 style="font-size:1.4rem;margin:2rem 0 1rem;">Your coach</h2>
+      <div class="card coach-card">
+        <div class="av" id="c-initial">N</div>
+        <div>
+          <div style="font-weight:800;font-size:1.1rem;" id="c-name">Coach Nadia</div>
+          <div style="color:var(--lsc-gray-light);font-size:0.9rem;margin-top:0.2rem;">PTR-certified · 12 years coaching · Former national-level player.</div>
+        </div>
+      </div>
+
+      <h2 style="font-size:1.4rem;margin:2rem 0 1rem;">Family bundle calculator</h2>
+      <div class="card calc-card">
+        <p style="color:var(--lsc-gray-light);font-size:0.9rem;margin:0 0 1rem;">Joining as a family? See your bundled annual cost — 15% off when 3+ members enrol.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+          <div>
+            <label>Adults</label>
+            <div class="stepper">
+              <button onclick="document.getElementById('adults').value=Math.max(1,+document.getElementById('adults').value-1);calcBundle()">−</button>
+              <input type="number" id="adults" value="2" min="1" max="6" onchange="calcBundle()" />
+              <button onclick="document.getElementById('adults').value=Math.min(6,+document.getElementById('adults').value+1);calcBundle()">+</button>
+            </div>
+          </div>
+          <div>
+            <label>Kids</label>
+            <div class="stepper">
+              <button onclick="document.getElementById('kids').value=Math.max(0,+document.getElementById('kids').value-1);calcBundle()">−</button>
+              <input type="number" id="kids" value="2" min="0" max="6" onchange="calcBundle()" />
+              <button onclick="document.getElementById('kids').value=Math.min(6,+document.getElementById('kids').value+1);calcBundle()">+</button>
+            </div>
+          </div>
+        </div>
+        <div id="bundleTotal" style="margin-top:1rem;"></div>
+      </div>
+    </div>
+
+    <!-- Booking sidebar -->
+    <div>
+      <div class="card book-card">
+        <span class="eyebrow">Book a trial</span>
+        <div class="price" id="b-price">EGP 3,200</div>
+        <div class="price-period" id="b-period">per month · first session free</div>
+
+        <ul style="list-style:none;padding:0;margin:1.5rem 0;">
+          <li style="padding:0.4rem 0;color:var(--lsc-gray-light);font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--lsc-green);font-weight:800;">·</span>1 free trial session</li>
+          <li style="padding:0.4rem 0;color:var(--lsc-gray-light);font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--lsc-green);font-weight:800;">·</span>Cancel anytime</li>
+          <li style="padding:0.4rem 0;color:var(--lsc-gray-light);font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--lsc-green);font-weight:800;">·</span>Coach-matching included</li>
+          <li style="padding:0.4rem 0;color:var(--lsc-gray-light);font-size:0.9rem;display:flex;gap:0.5rem;"><span style="color:var(--lsc-green);font-weight:800;">·</span>Equipment provided</li>
+        </ul>
+
+        <button class="btn btn-primary" style="width:100%;" onclick="toast('Trial booked. Check your WhatsApp.');">Book free trial</button>
+        <a class="btn btn-ghost" href="membership.html" style="width:100%;justify-content:center;margin-top:0.5rem;">See membership tiers</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<a class="wa-widget" href="https://wa.me/201000000000" title="WhatsApp" aria-label="WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 32 32" fill="currentColor"><path d="M16 .4C7.4.4.5 7.3.5 15.9c0 2.8.7 5.5 2.1 7.9L.4 31.6l8-2.1c2.3 1.3 4.9 1.9 7.6 1.9h.1c8.6 0 15.6-6.9 15.6-15.6S24.6.4 16 .4z"/></svg>
+</a>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="tour.js"></script>
+<script>
+// Pull sport from query string, fallback tennis
+const params = new URLSearchParams(location.search);
+const sportId = params.get('sport') || 'tennis';
+const sport = window.LSC.sports.find(s => s.id === sportId) || window.LSC.sports[1];
+
+// Wire hero photo if available for this sport
+const sportImgMap = { tennis: 'sport-tennis.jpg', swimming: 'sport-swimming.jpg', football: 'sport-football.jpg', stem: 'sport-stem.jpg' };
+if (sportImgMap[sport.id]) {
+  const banner = document.getElementById('sport-hero-banner');
+  banner.style.display = 'block';
+  banner.style.backgroundImage = `url('assets/${sportImgMap[sport.id]}')`;
+}
+
+const icon = document.getElementById('sport-icon');
+icon.textContent = sport.initial;
+icon.style.background = sport.color + '25';
+icon.style.color = sport.color;
+
+document.getElementById('sport-cat').textContent = sport.cat[0].toUpperCase() + sport.cat.slice(1);
+document.getElementById('sport-name').textContent = sport.name;
+document.getElementById('f-coach').textContent = sport.coach;
+document.getElementById('f-ages').textContent = sport.ages;
+document.getElementById('f-schedule').textContent = sport.schedule;
+document.getElementById('f-cap').innerHTML = capPill(sport.spots);
+document.getElementById('b-price').textContent = sport.price.split(' ').slice(0,2).join(' ');
+document.getElementById('b-period').textContent = sport.price.includes('/mo') ? 'per month · first session free' : 'first session free';
+document.getElementById('c-name').textContent = sport.coach;
+document.getElementById('c-initial').textContent = sport.coach.split(' ').slice(-1)[0][0];
+['t-coach1','t-coach2','t-coach3','t-coach4','t-coach5'].forEach(id => document.getElementById(id).textContent = sport.coach);
+
+calcBundle();
+</script>
+</body>
+</html>
