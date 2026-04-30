@@ -148,20 +148,30 @@
 (function(){
   const grid = document.getElementById('grid');
 
-  // Photos available for these sports; rest use a patterned tile with sport-themed colors
+  // All 20 sports now have dedicated photos (4 originals as .jpg, 16 ChatGPT-generated as .png)
   const imgMap = {
-    tennis: 'sport-tennis.jpg',
-    swimming: 'sport-swimming.jpg',
-    football: 'sport-football.jpg',
-    stem: 'sport-stem.jpg',
+    football:    'sport-football.jpg',
+    tennis:      'sport-tennis.jpg',
+    swimming:    'sport-swimming.jpg',
+    basketball:  'sport-basketball.jpg',
+    padel:       'sport-padel.jpg',
+    squash:      'sport-squash.jpg',
+    gym:         'sport-gym.jpg',
+    crossfit:    'sport-crossfit.jpg',
+    karate:      'sport-karate.jpg',
+    taekwondo:   'sport-taekwondo.jpg',
+    judo:        'sport-judo.jpg',
+    gymnastics:  'sport-gymnastics.jpg',
+    ballet:      'sport-ballet.jpg',
+    horseback:   'sport-equestrian.jpg',
+    volleyball:  'sport-volleyball.jpg',
+    handball:    'sport-handball.jpg',
+    cycling:     'sport-cycling.jpg',
+    yoga:        'sport-yoga.jpg',
+    chess:       'sport-chess.jpg',
+    stem:        'sport-stem.jpg',
   };
-  // Some sports can borrow facility photos for variety
-  const fallbackImgMap = {
-    gym: 'facility-gym.jpg',
-    crossfit: 'facility-gym.jpg',
-    padel: 'facility-tennis.jpg',
-    squash: 'facility-tennis.jpg',
-  };
+  const fallbackImgMap = {}; // no longer needed — every sport has a real photo
 
   // Categories displayed in this exact order with proper labels
   const CATEGORIES = [

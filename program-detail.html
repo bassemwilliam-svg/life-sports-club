@@ -179,7 +179,28 @@ const sportId = params.get('sport') || 'tennis';
 const sport = window.LSC.sports.find(s => s.id === sportId) || window.LSC.sports[1];
 
 // Wire hero photo if available for this sport
-const sportImgMap = { tennis: 'sport-tennis.jpg', swimming: 'sport-swimming.jpg', football: 'sport-football.jpg', stem: 'sport-stem.jpg' };
+const sportImgMap = {
+  football: 'sport-football.jpg',
+  tennis: 'sport-tennis.jpg',
+  swimming: 'sport-swimming.jpg',
+  basketball: 'sport-basketball.jpg',
+  padel: 'sport-padel.jpg',
+  squash: 'sport-squash.jpg',
+  gym: 'sport-gym.jpg',
+  crossfit: 'sport-crossfit.jpg',
+  karate: 'sport-karate.jpg',
+  taekwondo: 'sport-taekwondo.jpg',
+  judo: 'sport-judo.jpg',
+  gymnastics: 'sport-gymnastics.jpg',
+  ballet: 'sport-ballet.jpg',
+  horseback: 'sport-equestrian.jpg',
+  volleyball: 'sport-volleyball.jpg',
+  handball: 'sport-handball.jpg',
+  cycling: 'sport-cycling.jpg',
+  yoga: 'sport-yoga.jpg',
+  chess: 'sport-chess.jpg',
+  stem: 'sport-stem.jpg',
+};
 if (sportImgMap[sport.id]) {
   const banner = document.getElementById('sport-hero-banner');
   banner.style.display = 'block';
