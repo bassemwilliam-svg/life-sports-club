@@ -511,6 +511,53 @@ html[dir="rtl"] .navbar-links, html[dir="rtl"] .navbar-actions { flex-direction:
   to   { transform: translateY(0);    opacity: 1; }
 }
 
+/* Centered-card mode for welcome / closing / cross-page nav steps */
+.tour-overlay.centered .tour-spotlight { display: none; }
+.tour-tooltip.centered-card {
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(-50%, -50%);
+  width: min(440px, calc(100vw - 32px));
+  max-width: 440px;
+  text-align: center;
+  padding: 2rem 2rem 1.6rem;
+  animation: centerPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.tour-tooltip.centered-card .tour-progress { justify-content: center; }
+.tour-tooltip.centered-card h3 { font-size: 1.8rem; margin-top: 0.6rem; }
+.tour-tooltip.centered-card .tour-actions { justify-content: center; flex-wrap: wrap; }
+.tour-tooltip.centered-card .tour-actions .skip { margin-left: 0; }
+@keyframes centerPop {
+  from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+  to   { transform: translate(-50%, -50%) scale(1);   opacity: 1; }
+}
+
+/* Cross-page navigation card — brief "Going to [Page]…" sheet */
+.tour-tooltip.nav-card {
+  background: linear-gradient(135deg, var(--lsc-dark-2), #0a1a0a);
+  border-color: var(--lsc-green);
+  width: min(380px, calc(100vw - 32px));
+}
+.tour-tooltip.nav-card h3 {
+  font-family: var(--font-display); font-size: 2.2rem; color: var(--lsc-green);
+  margin: 0.5rem 0 0.5rem;
+}
+.tour-tooltip.nav-card .step-counter { color: var(--lsc-gray); }
+.tour-tooltip.nav-card p { color: var(--lsc-gray-light); font-size: 0.85rem; }
+.tour-tooltip.nav-card::after {
+  content: ''; display: block; margin: 1rem auto 0;
+  width: 32px; height: 32px;
+  border: 3px solid rgba(68,214,44,0.2);
+  border-top-color: var(--lsc-green);
+  border-radius: 50%;
+  animation: navspin 0.7s linear infinite;
+}
+@keyframes navspin {
+  to { transform: rotate(360deg); }
+}
+
 /* On small viewports, slightly tighten paddings */
 @media (max-width: 640px) {
   .tour-tooltip { padding: 1.2rem 1.2rem 1rem; }
